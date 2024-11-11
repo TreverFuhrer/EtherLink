@@ -37,6 +37,10 @@ public final class NeoPlugin extends JavaPlugin implements Listener {
         sendChatMessageToDiscord(playerName, message);
     }
 
+    /** Gets new messages in server chat and send to Discord bot
+     * @param playerName name of the player
+     * @param message message the player sent
+     */
     private void sendChatMessageToDiscord(String playerName, String message) {
         try {
             HttpClient client = HttpClient.newHttpClient();
