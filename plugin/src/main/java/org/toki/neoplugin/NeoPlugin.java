@@ -15,7 +15,7 @@ public final class NeoPlugin extends JavaPlugin {
 
     @Override // Startup
     public void onEnable() {
-        Dotenv dotenv = Dotenv.configure().load();
+        Dotenv dotenv = Dotenv.configure().filename(".env").load();
         String wsUrl = dotenv.get("WEBSOCKET_URL");
 
         // Prevent null Url
