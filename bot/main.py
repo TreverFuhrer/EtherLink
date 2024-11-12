@@ -5,7 +5,7 @@ from websocket_server import start_websocket_server  # Import the WebSocket serv
 import os
 from dotenv import load_dotenv
 
-# Load environment variables
+# Load token from .env
 load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 

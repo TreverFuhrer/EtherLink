@@ -8,5 +8,3 @@ async def process_chat_message(data):
     DISCORD_CHANNEL_ID = 1303443844138008778
     channel = bot.get_channel(DISCORD_CHANNEL_ID)
     await channel.send(f"{username}: {message}")
-
-from main import bot  # Import the bot to access Discord functions
