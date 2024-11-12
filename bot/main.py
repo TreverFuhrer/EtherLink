@@ -9,24 +9,23 @@ from dotenv import load_dotenv
 load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
-# Initialize the Discord bot
+# Initialize Discord Bot
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-# Define any bot commands here (optional)
+# Bot commands
 @bot.command(name='hello')
 async def hello(ctx):
     await ctx.send(f"Hello {ctx.author.name}!")
 
-# Start both the bot and WebSocket server concurrently
+# Start bot and WebSocket together
 async def main():
-    # Run both bot and WebSocket server at the same time
     await asyncio.gather(
         bot.start(DISCORD_TOKEN),
         start_websocket_server()
     )
 
-# Run the main function to launch everything
+# Main Function
 if __name__ == "__main__":
     asyncio.run(main())
