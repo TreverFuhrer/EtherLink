@@ -1,8 +1,17 @@
 import asyncio
 import json
 import websockets
+import os
+from urllib.parse import urlparse
+from dotenv import load_dotenv
 from event_handlers import chat_handler
 #, whitelist_handler  # Import event handlers
+
+load_dotenv()
+WEBSOCKET_URL = os.getenv("WEBSOCKET_URL")
+url = urlparse(WEBSOCKET_URL)
+host = url.hostname
+port = url.port
 
 # Event dictionary, Routes to each event.py
 EVENTS = {
@@ -26,6 +35,6 @@ async def handle_connection(websocket, path):
 
 # Function to start websocket
 async def start_websocket_server():
-    server = await websockets.serve(handle_connection, "localhost", 6789)
-    print("WebSocket server started on ws://localhost:6789")
+    server = await websockets.serve(handle_connection, host, port)
+    print("WebSocket server started on " + WEBSOCKET_URL)
     await server.wait_closed()
