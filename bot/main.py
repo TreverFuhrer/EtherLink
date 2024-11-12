@@ -1,6 +1,6 @@
 import asyncio
-from bot import bot
-from websocket_server import start_websocket_server  # Import the WebSocket server
+from discord_bot import bot, DISCORD_TOKEN
+from websocket_server import start_websocket_server
 
 # Bot commands
 @bot.command(name='hello')
@@ -10,7 +10,7 @@ async def hello(ctx):
 # Start bot and WebSocket together
 async def main():
     await asyncio.gather(
-        bot.start(bot.DISCORD_TOKEN),
+        bot.start(DISCORD_TOKEN),
         start_websocket_server()
     )
 
