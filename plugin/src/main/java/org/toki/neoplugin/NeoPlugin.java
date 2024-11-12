@@ -27,7 +27,8 @@ public final class NeoPlugin extends JavaPlugin {
             int port = uri.getPort();
 
             // New webSocket with (address, logger) and starts it
-            new InitWebSocket(new InetSocketAddress(host, port), getLogger()).start();
+            webSocket = new InitWebSocket(new InetSocketAddress(host, port), getLogger());
+            webSocket.start();
         } 
         catch (URISyntaxException e) {
             e.printStackTrace();

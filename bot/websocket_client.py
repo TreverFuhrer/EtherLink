@@ -30,7 +30,7 @@ async def connect_to_websocket():
         try:
             # Handle plugin signal messages
             while True:
-                handle_signals(websocket)
+                await handle_signals(websocket)
         except websockets.exceptions.ConnectionClosed:
             print("WebSocket connection closed.")
 
