@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.toki.neoplugin.events.ChatListener;
+import org.toki.neoplugin.websocket.IncomingSignal;
 import org.toki.neoplugin.websocket.InitWebSocket;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -19,6 +20,7 @@ public final class NeoPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        IncomingSignal.initialize(this);
         Dotenv dotenv = Dotenv.configure().filename(".env").load();
 
         try {

@@ -16,23 +16,31 @@ EVENTS = {
     #"WHITELIST_REQUEST": whitelist_handler.process_whitelist_request
 }
 
+# Global Variable
+plugin_connection = None
+
 # Connect bot to plugin websocket server
 async def connect_to_websocket():
-    async with websockets.connect(
-        WEBSOCKET_URL,
-        extra_headers={"AUTH_TOKEN": AUTH_TOKEN}
-    ) as websocket:
-        print("Connected to the WebSocket server.")
+    global plugin_connection
 
-        global plugin_connection
-        plugin_connection = websocket
-        
+    while True:
         try:
-            # Handle plugin signal messages
-            while True:
-                await handle_signals(websocket)
-        except websockets.exceptions.ConnectionClosed:
-            print("WebSocket connection closed.")
+            async with websockets.connect(
+                WEBSOCKET_URL,
+                extra_headers={"AUTH_TOKEN": AUTH_TOKEN}
+            ) as websocket:
+                print("Connected to the WebSocket server.")
+                plugin_connection = websocket
+                # Handle plugin signal messages
+                while True:
+                    await handle_signals(websocket)
+        except (websockets.ConnectionClosedError, ConnectionRefusedError) as e:
+            print(f"WebSocket connection lost: {e}. Retrying in 5 seconds...")
+            plugin_connection = None
+            await asyncio.sleep(5)  # Wait before retrying
+        except Exception as e:
+            print(f"Unexpected error: {e}")
+            await asyncio.sleep(5)  # Wait before retrying
 
 
 # Handle incoming signal message
