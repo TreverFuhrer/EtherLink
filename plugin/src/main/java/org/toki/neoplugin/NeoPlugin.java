@@ -1,68 +1,48 @@
 package org.toki.neoplugin;
 
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.toki.neoplugin.events.ChatListener;
+import org.toki.neoplugin.websocket.WebSocketClient;
 
-import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import io.github.cdimascio.dotenv.Dotenv;
 
-public final class NeoPlugin extends JavaPlugin implements Listener {
+public final class NeoPlugin extends JavaPlugin {
 
-    @Override // Plugin startup logic
+    private WebSocketClient webSocketClient;
+
+    @Override // Startup
     public void onEnable() {
-        Bukkit.getPluginManager().registerEvents(this, this);
-    }
+        Dotenv dotenv = Dotenv.configure().load();
+        String wsUrl = dotenv.get("WEBSOCKET_URL");
 
-    @Override // Plugin shutdown logic
-    public void onDisable() {
-        // Clean up stuff on shutdown
-    }
+        // Prevent null Url
+        if (wsUrl == null) { 
+            getLogger().severe("WebSocket URL not set in environment variables.");
+            return;
+        }
 
-    /** Detect player chat event
-     * Gets messsage of a player chat in game
-     * @param event a AsyncChatEvent
-     */
-    @EventHandler
-    public void onPlayerChat(AsyncChatEvent event) {
-        String playerName = event.getPlayer().getName();
-        String message = PlainTextComponentSerializer.plainText().serialize(event.message());
-
-        sendChatMessageToDiscord(playerName, message);
-    }
-
-    /** Gets new messages in server chat and send to Discord bot
-     * @param playerName name of the player
-     * @param message message the player sent
-     */
-    private void sendChatMessageToDiscord(String playerName, String message) {
+        // Attempt connection to websocket server
         try {
-            HttpClient client = HttpClient.newHttpClient();
-            URI uri = URI.create("http://127.0.0.1:5000/minecraft_chat");
-            String jsonInputString = String.format("{\"username\": \"%s\", \"message\": \"%s\"}", playerName, message);
-    
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(jsonInputString))
-                    .build();
-    
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-    
-            if (response.statusCode() == 200) {
-                System.out.println("Event sent to Discord bot successfully.");
-            } else {
-                System.out.println("Failed to send event: " + response.body());
-            }
+            URI serverUri = new URI(wsUrl);
+            this.webSocketClient = new WebSocketClient(serverUri);
+            this.webSocketClient.connectToServer();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Register all event listeners
+        Bukkit.getPluginManager().registerEvents(new ChatListener(webSocketClient), this);
+
+        // Startup log message
+        getLogger().info("NeoPlugin enabled and WebSocket client connected.");    
     }
-    
+
+    @Override // Close WebSocket connection when the plugin is disabled
+    public void onDisable() {
+        if (webSocketClient != null) webSocketClient.disconnectFromServer();
+        getLogger().info("NeoPlugin disabled and WebSocket client disconnected.");
+    }    
 }
