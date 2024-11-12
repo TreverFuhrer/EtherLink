@@ -1,5 +1,6 @@
 package org.toki.neoplugin.websocket;
 
+import org.bukkit.Bukkit;
 import org.json.JSONObject;
 
 /**
@@ -15,7 +16,10 @@ public class IncomingSignal {
             case "CHAT_MESSAGE":
                 //ChatHandler.handleChatMessage(json);
                 break;
-            // Add more cases for other event types as needed
+            case "SERVER_CHAT":
+                String command = "say " + json.getString("message");;
+                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
+                break;
             default:
                 System.out.println("Unknown event type: " + eventType);
         }
