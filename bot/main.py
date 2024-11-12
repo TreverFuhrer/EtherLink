@@ -11,11 +11,3 @@ async def main():
 if __name__ == "__main__":
     asyncio.run(main())
 
-
-# Commands
-
-# Define a slash command to send a chat message to the Minecraft server
-@bot.tree.command(name="server_chat", description="Send a chat message to the Minecraft server from the bot")
-async def server_chat(interaction: discord.Interaction, message: str):
-    await interaction.response.send_message(f"Sending message to server: {message}", ephemeral=True)
-    await send_signal("SERVER_CHAT", {"message": message})
