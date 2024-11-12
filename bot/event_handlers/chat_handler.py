@@ -4,8 +4,9 @@ from discord_bot import bot
 async def process_chat_message(data):
     username = data["username"]
     message = data["message"]
+    clean_message = message.strip('"')
 
     # Send message to designated Discord channel
     DISCORD_CHANNEL_ID = 1303443844138008778
     channel = bot.get_channel(DISCORD_CHANNEL_ID)
-    await channel.send(f"{username}: {message}")
+    await channel.send(f"{username}: {clean_message}")
