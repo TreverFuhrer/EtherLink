@@ -1,6 +1,6 @@
 import asyncio
-from discord_bot import discord, bot, DISCORD_TOKEN
-from websocket_client import start_websocket_client, send_signal
+from discord_bot import bot, DISCORD_TOKEN
+from websocket_client import start_websocket_client
 
 # Start bot and WebSocket together
 async def main():

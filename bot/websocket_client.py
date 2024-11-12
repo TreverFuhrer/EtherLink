@@ -22,6 +22,10 @@ plugin_connection = None
 # Connect bot to plugin websocket server
 async def connect_to_websocket():
     global plugin_connection
+    attempts = 0
+    sleep_duration = 10
+    if (attempts > 12):
+        sleep_duration = 60
 
     while True:
         try:
@@ -35,12 +39,18 @@ async def connect_to_websocket():
                 while True:
                     await handle_signals(websocket)
         except (websockets.ConnectionClosedError, ConnectionRefusedError) as e:
-            print(f"WebSocket connection lost: {e}. Retrying in 5 seconds...")
+            print(f"WebSocket connection lost: {e}. Retrying in {sleep_duration} seconds...")
             plugin_connection = None
-            await asyncio.sleep(5)  # Wait before retrying
+            attempts += 1
+            await asyncio.sleep(sleep_duration) # Wait before retrying
+        except OSError as e:
+            print(f"Connection attempt failed: {e}. Retrying in {sleep_duration} seconds...")
+            plugin_connection = None
+            attempts += 1
+            await asyncio.sleep(sleep_duration) # Wait before retrying
         except Exception as e:
             print(f"Unexpected error: {e}")
-            await asyncio.sleep(5)  # Wait before retrying
+            await asyncio.sleep(sleep_duration) # Wait before retrying
 
 
 # Handle incoming signal message
