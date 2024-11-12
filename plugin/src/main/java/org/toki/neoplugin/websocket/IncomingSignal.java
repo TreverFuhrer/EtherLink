@@ -3,12 +3,12 @@ package org.toki.neoplugin.websocket;
 import org.json.JSONObject;
 
 /**
- * Handles incoming connection from Discord Bot
+ * Handles incoming signal from Discord Bot
  */
-public class IncomingConnection {
+public class IncomingSignal {
     
-    public static void routeConnect(String data) {
-        JSONObject json = new JSONObject(data);
+    public static void routeSignal(String signal) {
+        JSONObject json = new JSONObject(signal);
         String eventType = json.getString("type");
 
         switch (eventType) {

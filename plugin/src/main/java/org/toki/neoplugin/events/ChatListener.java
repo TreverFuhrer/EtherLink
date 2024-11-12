@@ -4,7 +4,7 @@ import org.bukkit.event.Listener;
 
 import org.bukkit.event.EventHandler;
 import org.json.JSONObject;
-import org.toki.neoplugin.websocket.WebSocketClient;
+import org.toki.neoplugin.websocket.InitWebSocket;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
@@ -12,10 +12,10 @@ import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 
 public class ChatListener implements Listener {
 
-    private final WebSocketClient webSocketClient;
+    private final InitWebSocket webSocket;
 
-    public ChatListener(WebSocketClient webSocketClient) {
-        this.webSocketClient = webSocketClient;
+    public ChatListener(InitWebSocket webSocket) {
+        this.webSocket = webSocket;
     }
 
     @EventHandler
@@ -33,7 +33,7 @@ public class ChatListener implements Listener {
         json.put("message", messageJson);
 
         // Send to discord bot
-        webSocketClient.connect(json);
+        webSocket.sendSignal(json.toString());
     }
     
 }
