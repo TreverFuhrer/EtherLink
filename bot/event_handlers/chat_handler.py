@@ -7,6 +7,6 @@ async def process_chat_message(data):
     clean_message = message.strip('"')
 
     # Send message to designated Discord channel
-    DISCORD_CHANNEL_ID = 1303443844138008778
+    DISCORD_CHANNEL_ID = 1306010586143916086
     channel = bot.get_channel(DISCORD_CHANNEL_ID)
     await channel.send(f"{username}: {clean_message}")
