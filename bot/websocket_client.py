@@ -56,7 +56,7 @@ async def connect_to_websocket():
 # Handle incoming signal message
 async def handle_signals(websocket):
     signal = await websocket.recv()
-    print(f"Received from Minecraft server: {signal}")
+    #print(f"Received from Minecraft server: {signal}")
                 
     # Parse the signal as JSON
     data = json.loads(signal)
