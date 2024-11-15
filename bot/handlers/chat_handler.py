@@ -2,7 +2,7 @@ import discord
 from discord_bot import bot
 import hashlib
 import aiohttp
-from lore_book import store_chat_log
+from events.lore_book import store_chat_log
 
 DISCORD_CHANNEL_ID = 1306010586143916086
 player_head_cache = {}
