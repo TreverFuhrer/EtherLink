@@ -3,7 +3,7 @@ import json
 import websockets
 import os
 from dotenv import load_dotenv
-from event_handlers import chat_handler
+from handlers import chat_handler
 #, whitelist_handler  # Import event handlers
 
 load_dotenv()
