@@ -2,7 +2,7 @@ import discord
 from discord_bot import bot
 import hashlib
 import aiohttp
-from events.lore_book import store_chat_log
+#from events.lore_book import store_chat_log
 
 DISCORD_CHANNEL_ID = 1306010586143916086
 player_head_cache = {}
@@ -13,7 +13,7 @@ async def process_chat_message(data):
     message = data["message"]
     clean_message = message.strip('"')
 
-    store_chat_log(username, clean_message)
+    #store_chat_log(username, clean_message)
 
     # Get player skin head if not in cache
     if not username in player_head_cache:
