@@ -15,26 +15,40 @@ public class WhitelistHandler {
     /**
      * Whitelists a Java or Bedrock user
      * @param delimitedString string with data divided with | char
-     * @param p plugin object to execute commands on
+     * @param p JavaPlugin object to execute commands on
      */
     public static void handleWhitelist(String delimitedString, JavaPlugin p) {
         String[] parts = delimitedString.split("\\|");
 
-        String version = parts[0];
+        String invoker = parts[0];
+        String version = parts[1];
         String username;
         String floodgateuid;
-        if (version.equals("java")) {
-            username = parts[1];
-            consoleCommand(p, "whitelist add " + username);
-            p.getLogger().info("whitelist add " + username);
-        } 
-        else if (version.equals("bedrock")) {
-            username = parts[1];
-            floodgateuid = parts[2];
 
+        if (version.equals("java")) 
+        {
+            // Get user
+            username = parts[2];
+
+            // Run Command
+            consoleCommand(p, "whitelist add " + username);
+
+            // Log Command Attempt
+            p.getLogger().info(invoker + " attempted command:\nwhitelist add " + username);
+        } 
+        else if (version.equals("bedrock")) 
+        {
+            // Get user and data
+            username = parts[2];
+            floodgateuid = parts[3];
+
+            // Run Command
             if (editWhitelistFile(username, floodgateuid, p)) {
                 consoleCommand(p, "whitelist reload");
             }
+
+            // Log Command Attempt
+            p.getLogger().info(invoker + " attempted command:\nbedrock whitelist " + username);
         } 
         else // "unknown"
             return;
@@ -43,7 +57,7 @@ public class WhitelistHandler {
     // Helper method to run commands in server console
     private static void consoleCommand(JavaPlugin plugin, String command) {
         Bukkit.getScheduler().runTask(plugin, () -> {
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "reload whitelist");
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
         });
     }
 
@@ -74,10 +88,10 @@ public class WhitelistHandler {
 
             // Write back the updated JSON array to the file
             try (FileWriter writer = new FileWriter(whitelistFile)) {
-                writer.write(whitelist.toString(4)); // Pretty print with indentation
+                writer.write(whitelist.toString(4));
             }
 
-            //plugin.getLogger().info("Added Bedrock user to whitelist.json: " + username);
+            plugin.getLogger().info("Added Bedrock user to whitelist.json: " + username);
             return true;
         } 
         catch (IOException e) {
