@@ -34,7 +34,7 @@ public class WhitelistHandler {
             consoleCommand(p, "whitelist add " + username);
 
             // Log Command Attempt
-            p.getLogger().info(invoker + " attempted command:\nwhitelist add " + username);
+            p.getLogger().info(invoker + " attempted command: whitelist add " + username);
         } 
         else if (version.equals("bedrock")) 
         {
@@ -48,7 +48,7 @@ public class WhitelistHandler {
             }
 
             // Log Command Attempt
-            p.getLogger().info(invoker + " attempted command:\nbedrock whitelist " + username);
+            p.getLogger().info(invoker + " attempted command: bedrock whitelist " + username);
         } 
         else // "unknown"
             return;
@@ -65,7 +65,7 @@ public class WhitelistHandler {
      * Edits the whitelist.json file to add a new Bedrock user entry
      */
     private static boolean editWhitelistFile(String username, String floodgateuid, JavaPlugin plugin) {
-        File whitelistFile = new File(plugin.getDataFolder().getParentFile(), "whitelist.json");
+        File whitelistFile = new File(plugin.getDataFolder().getParentFile().getParent(), "whitelist.json");
 
         try {
             // Read the existing whitelist.json file
