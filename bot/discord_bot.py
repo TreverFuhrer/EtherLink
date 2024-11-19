@@ -21,12 +21,12 @@ async def on_ready():
     await bot.change_presence(status=discord.Status.dnd, activity=activity)
     print("------")
     print(f"NeoSMP is online!!")
+    print("------")
     try:
         await bot.tree.sync()  # Sync commands with Discord
         print("Slash commands synchronized.")
     except Exception as e:
         print(f"Error synchronizing commands: {e}")
-    print("------")
 
 
 """ Server Chat Command"""
@@ -55,7 +55,7 @@ async def whitelist(interaction: discord.Interaction, username: str = None):
         if not interaction.message or not interaction.message.reference:
             # Check if the command is a reply to a message
             await interaction.response.send_message(
-                "Reply to a message containing the player's username.\nThen type /whitelist", ephemeral=True)
+                "Type /whitelist username\n Or reply to a username and type /whitelist", ephemeral=True)
             return
 
         # Get the referenced message
