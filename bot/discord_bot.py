@@ -3,6 +3,7 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 import asyncio
+from whitelist_command import get_whitelist_delim
 #from events.lore_book import daily_lore_update
 
 load_dotenv()
@@ -35,6 +36,16 @@ async def server_chat(interaction: discord.Interaction, message: str):
         from websocket_client import send_signal
         await interaction.response.send_message(f"Message to server: {message}", ephemeral=True)
         await send_signal("SERVER_CHAT", {"message": message})
+
+
+@bot.tree.command(name="whitelist", description="Whitelist any java or bedrock player on the NeoSMP server!")
+async def whitelist(interaction: discord.Interaction, username: str):
+    if not any(role.name == "Admin" or "SMP Mod" for role in interaction.user.roles):
+        await interaction.response.send_message("You don't have the required role to use this command.", ephemeral=True)
+    else:
+        from websocket_client import send_signal
+        await interaction.response.send_message(f"Attempting to whitelist {username}", ephemeral=True)
+        await send_signal("WHITELIST", {"message": get_whitelist_delim(username)})
 
 
 '''@bot.tree.command(name="lore_update", description="Trev's test command for something secret")
