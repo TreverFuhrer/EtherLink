@@ -27,7 +27,7 @@ async def on_ready():
         GUILD_ID = 1298047553530626058
         guild = discord.Object(id=GUILD_ID)
         await bot.tree.sync(guild=guild)
-        //await bot.tree.sync()
+        #await bot.tree.sync()
         print("Slash commands synchronized.")
     except Exception as e:
         print(f"Error synchronizing commands: {e}")
