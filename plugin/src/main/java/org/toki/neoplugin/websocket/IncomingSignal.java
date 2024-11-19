@@ -43,7 +43,7 @@ public class IncomingSignal {
     // Helper method to run commands in server console
     private static void consoleCommand(String command) {
         Bukkit.getScheduler().runTask(plugin, () -> {
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "reload whitelist");
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
         });
     }
 }

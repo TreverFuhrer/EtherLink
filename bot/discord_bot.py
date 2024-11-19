@@ -24,9 +24,10 @@ async def on_ready():
     print("------")
     try:
         # Sync commands with Discord
-        GUILD_ID = 1298047553530626058
-        guild = discord.Object(id=GUILD_ID)
-        await bot.tree.sync(guild=guild)
+        #GUILD_ID = 1298047553530626058
+        #guild = discord.Object(id=GUILD_ID)
+        #await bot.tree.sync(guild=guild)
+        await bot.tree.sync()
         print("Slash commands synchronized.")
     except Exception as e:
         print(f"Error synchronizing commands: {e}")
@@ -44,13 +45,13 @@ async def server_chat(interaction: discord.Interaction, message: str):
 
 
 """ White List Command """
-@bot.tree.command(name="whitelist", description="Whitelist a Java or Bedrock player by replying to their message!")
-async def whitelist(interaction: discord.Interaction, username: str = None):
+@bot.tree.command(name="whitelisttt", description="Whitelist a Java or Bedrock player by replying to their message!")
+async def whitelisttt(interaction: discord.Interaction, username: str):
     
-    if not any(role.name in ["Admin", "SMP Mod"] for role in interaction.user.roles):
+    '''if not any(role.name in ["Admin", "SMP Mod"] for role in interaction.user.roles):
         # Check if user has appropriate role
         await interaction.response.send_message("You don't have the required role to use this command.", ephemeral=True)
-        return
+        return'''
 
     if not username:
         # Check type of whitelist command
