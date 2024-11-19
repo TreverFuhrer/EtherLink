@@ -3,7 +3,7 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 import asyncio
-from whitelist_command import get_whitelist_delim
+from events.whitelist_command import get_whitelist_delim
 #from events.lore_book import daily_lore_update
 
 load_dotenv()
