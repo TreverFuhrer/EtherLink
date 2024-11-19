@@ -23,7 +23,10 @@ async def on_ready():
     print(f"NeoSMP is online!!")
     print("------")
     try:
-        await bot.tree.sync()  # Sync commands with Discord
+        # Sync commands with Discord
+        GUILD_ID = 1298047553530626058
+        guild = discord.Object(id=GUILD_ID)
+        await bot.tree.sync(guild=guild)
         print("Slash commands synchronized.")
     except Exception as e:
         print(f"Error synchronizing commands: {e}")
