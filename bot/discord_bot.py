@@ -50,8 +50,8 @@ async def whitelist(interaction: discord.Interaction, username: str):
         await send_signal("WHITELIST", {"message": invoker_username+"|"+get_whitelist_delim(username)}, interaction)
 
 
-@bot.tree.command(name="whitelist", description="Whitelist a Java or Bedrock player by replying to their message!")
-async def whitelist(interaction: discord.Interaction):
+@whitelist.subcommand(name="add", description="Whitelist a Java or Bedrock player by replying to their message!")
+async def add(interaction: discord.Interaction):
     # Check if user has appropriate role
     if not any(role.name in ["Admin", "SMP Mod"] for role in interaction.user.roles):
         await interaction.response.send_message("You don't have the required role to use this command.", ephemeral=True)
