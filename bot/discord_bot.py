@@ -52,39 +52,39 @@ async def whitelist(interaction: discord.Interaction, username: str = None):
         await interaction.response.send_message("You don't have the required role to use this command.", ephemeral=True)
         return
 
-    if username == None:
+    if not username:
         # Check type of whitelist command
 
-        if not interaction.message or not interaction.message.reference:
+        referenced_message = await get_referenced_message(interaction)
+        if not referenced_message:
             # Check if the command is a reply to a message
             await interaction.response.send_message(
                 "Type /whitelist username\n Or reply to a username and type /whitelist", ephemeral=True)
             return
-
-        # Get the referenced message
-        referenced_message = interaction.message.reference.resolved
-        if not referenced_message or not isinstance(referenced_message, discord.Message):
-            await interaction.response.send_message("Could not retrieve the referenced message.", ephemeral=True)
-            return
     
-        # Extract username from referenced message
+        # Extract username from the referenced message content
         username = referenced_message.content.strip()
-
-        # Add the green checkmark reaction
         try:
+            # Add the green checkmark reaction to the referenced message
             await referenced_message.add_reaction("✅")
         except discord.Forbidden:
-            await interaction.response.send_message("I lack permission to add reactions to messages.", ephemeral=True)
+            await interaction.response.send_message(
+                "I lack permission to add reactions to messages.", ephemeral=True
+            )
             return
     
     # Send the signal to the plugin
     from websocket_client import send_signal
     await interaction.response.send_message(f"Whitelisting {username}!", ephemeral=True)
-    await send_signal("WHITELIST", {"message": {interaction.user.name}+"|"+get_whitelist_delim(username)}, interaction)
+    await send_signal("WHITELIST", {"message": interaction.user.name+"|"+get_whitelist_delim(username)}, interaction)
 
 
 
-
+async def get_referenced_message(interaction: discord.Interaction):
+    """ Helper to retrieve the referenced message when a command is used as a reply. """
+    if interaction.message and interaction.message.reference:
+        return interaction.message.reference.resolved
+    return None
 
 
 
