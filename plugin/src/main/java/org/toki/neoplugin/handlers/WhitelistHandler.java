@@ -26,6 +26,7 @@ public class WhitelistHandler {
         if (version.equals("java")) {
             username = parts[1];
             consoleCommand(p, "whitelist add " + username);
+            p.getLogger().info("whitelist add " + username);
         } 
         else if (version.equals("bedrock")) {
             username = parts[1];
