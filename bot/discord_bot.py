@@ -44,8 +44,9 @@ async def whitelist(interaction: discord.Interaction, username: str):
         await interaction.response.send_message("You don't have the required role to use this command.", ephemeral=True)
     else:
         from websocket_client import send_signal
-        await interaction.response.send_message(f"Attempting to whitelist {username}", ephemeral=True)
-        await send_signal("WHITELIST", {"message": get_whitelist_delim(username)})
+        await interaction.response.send_message(f"Whitelisting {username}!\n{get_whitelist_delim(username)}", ephemeral=True)
+
+        #await send_signal("WHITELIST", {"message": get_whitelist_delim(username)})
 
 
 '''@bot.tree.command(name="lore_update", description="Trev's test command for something secret")

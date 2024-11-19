@@ -6,7 +6,7 @@
 
     <groupId>org.toki</groupId>
     <artifactId>NeoPlugin</artifactId>
-    <version>0.1.5</version>
+    <version>0.2.0</version>
     <packaging>jar</packaging>
 
     <name>NeoPlugin</name>
