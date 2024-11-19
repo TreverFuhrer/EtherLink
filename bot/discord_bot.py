@@ -45,7 +45,7 @@ async def whitelist(interaction: discord.Interaction, username: str):
     else:
         from websocket_client import send_signal
         invoker_username = interaction.user.name
-        await interaction.response.send_message(invoker_username+"|"+f"Whitelisting {username}!", ephemeral=True)
+        await interaction.response.send_message(f"Whitelisting {username}!", ephemeral=True)
         await send_signal("WHITELIST", {"message": invoker_username+"|"+get_whitelist_delim(username)}, interaction)
 
 
