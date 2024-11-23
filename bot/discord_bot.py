@@ -46,33 +46,35 @@ async def server_chat(interaction: discord.Interaction, message: str):
 
 """ White List Command """
 @bot.tree.command(name="whitelist", description="Whitelist a Java or Bedrock player by replying to their message!")
-async def whitelist(interaction: discord.Interaction, username: str):
+async def whitelist(interaction: discord.Interaction, username: str, reaction: bool = None):
     if not any(role.name in ["Admin", "SMP Mod"] for role in interaction.user.roles):
         # Check if user has appropriate role
         await interaction.response.send_message("You don't have the required role to use this command.", ephemeral=True)
         return
+    
+    # Option to add reaction to users message confirming their whitelist
+    if reaction == True:
+        found_message = None
+        async for message in interaction.channel.history(limit=30):
+            # Find the message with the username
+            if username in message.content:
+                found_message = message
+                break
 
-    found_message = None
-    async for message in interaction.channel.history(limit=30):
-        # Find the message with the username
-        if username in message.content:
-            found_message = message
-            break
-
-    if found_message:
-        # React to users username message
-        try:
-            await found_message.add_reaction("✅")
-        except discord.Forbidden:
+        if found_message:
+            # React to users username message
+            try:
+                await found_message.add_reaction("✅")
+            except discord.Forbidden:
+                await interaction.response.send_message(
+                    "I lack permission to add reactions to messages.", ephemeral=True
+                )
+        else:
+            # No message found containing the username
             await interaction.response.send_message(
-                "I lack permission to add reactions to messages.", ephemeral=True
+                f"Did not react to message with ✅.\n Reaction will be given if command used in channel with users username message.",
+                ephemeral=True
             )
-    else:
-        # No message found containing the username
-        await interaction.response.send_message(
-            f"Did not react to message with ✅.\n Reaction will be given if command used in channel with users username message.",
-            ephemeral=True
-        )
     
     # Send the signal to the plugin
     from websocket_client import send_signal
