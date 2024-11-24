@@ -45,8 +45,8 @@ async def server_chat(interaction: discord.Interaction, message: str):
 
 
 """ White List Command """
-@bot.tree.command(name="whitelist", description="Whitelist a Java or Bedrock player by replying to their message!")
-async def whitelist(interaction: discord.Interaction, username: str, reaction: bool = None):
+@bot.tree.command(name="whitelisttt", description="Whitelist a Java or Bedrock player by replying to their message!")
+async def whitelisttt(interaction: discord.Interaction, username: str, reaction: bool = None):
     if not any(role.name in ["Admin", "SMP Mod"] for role in interaction.user.roles):
         # Check if user has appropriate role
         await interaction.response.send_message("You don't have the required role to use this command.", ephemeral=True)
