@@ -41,12 +41,12 @@ async def server_chat(interaction: discord.Interaction, message: str):
     else:
         from websocket_client import send_signal
         await interaction.response.send_message(f"Message to server: {message}", ephemeral=True)
-        await send_signal("SERVER_CHAT", {"message": message})
+        await send_signal("SERVER_CHAT", {"message": message}, interaction)
 
 
 """ White List Command """
-@bot.tree.command(name="whitelisttt", description="Whitelist a Java or Bedrock player by replying to their message!")
-async def whitelisttt(interaction: discord.Interaction, username: str, reaction: bool = None):
+@bot.tree.command(name="whitelistt", description="Whitelist a Java or Bedrock player by replying to their message!")
+async def whitelistt(interaction: discord.Interaction, username: str, reaction: bool = None):
     if not any(role.name in ["Admin", "SMP Mod"] for role in interaction.user.roles):
         # Check if user has appropriate role
         await interaction.response.send_message("You don't have the required role to use this command.", ephemeral=True)
