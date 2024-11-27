@@ -18,7 +18,10 @@ class LoreUpdate(commands.Cog):
         model_name = "EleutherAI/gpt-neo-1.3B"
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, token=HUGGING_FACE_API_TOKEN)
         self.model = AutoModelForCausalLM.from_pretrained(model_name, token=HUGGING_FACE_API_TOKEN)
-        self.generator = pipeline("text-generation", model=self.model, tokenizer=self.tokenizer)
+        pad_token_id = self.tokenizer.eos_token_id
+        if pad_token_id is None:
+            raise ValueError("The tokenizer does not have an `eos_token_id`. Please specify one manually.")
+        self.generator = pipeline("text-generation", model=self.model, tokenizer=self.tokenizer, pad_token_id=pad_token_id, truncation=True)
 
 
 
