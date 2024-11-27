@@ -3,13 +3,9 @@ from discord.ext import commands
 from events.whitelist_command import get_whitelist_delim
 from websocket_client import send_signal
 
-# Setup Cog
-async def setup(bot):
-    await bot.add_cog(Whitelist(bot))
 
-
-""" Commands related to whitelisting players """
 class Whitelist(commands.Cog):
+    """ Commands related to whitelisting players """
 
     # Allows changes to the bot
     def __init__(self, bot):
@@ -41,3 +37,9 @@ class Whitelist(commands.Cog):
 
         await ctx.reply(f"Whitelisting {username}!", ephemeral=True)
         await send_signal("WHITELIST", {"message": f"{ctx.author.name}|{get_whitelist_delim(username)}"}, ctx)
+
+
+
+# Setup Cog
+async def setup(bot):
+    await bot.add_cog(Whitelist(bot))

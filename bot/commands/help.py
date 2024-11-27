@@ -1,13 +1,9 @@
 import discord
 from discord.ext import commands
 
-# Setup Cog
-async def setup(bot):
-    await bot.add_cog(Help(bot))
 
-
-""" Commands related to helping """
 class Help(commands.Cog):
+    """ Commands related to helping """
 
     # Allows changes to the bot
     def __init__(self, bot):
@@ -45,3 +41,9 @@ class Help(commands.Cog):
         
          # Send embed message
         await ctx.reply(embed=embed, ephemeral=True)
+
+
+
+# Setup Cog
+async def setup(bot):
+    await bot.add_cog(Help(bot))
