@@ -1,8 +1,13 @@
 import discord
 from discord.ext import commands
 
-class ServerChat(commands.Cog):
-    """ Commands related to helping """
+# Setup Cog
+async def setup(bot):
+    await bot.add_cog(Help(bot))
+
+
+""" Commands related to helping """
+class Help(commands.Cog):
 
     # Allows changes to the bot
     def __init__(self, bot):
@@ -22,7 +27,7 @@ class ServerChat(commands.Cog):
         await ctx.reply(embed=embed, ephemeral=True)
 
 
-    """ Help Mpd Command """
+    """ Help Mod Command """
     @commands.hybrid_command(name="helpmod", description="Command inoformation!")
     async def helpmod(self, ctx: commands.Context, message: str):
 

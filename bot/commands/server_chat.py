@@ -1,9 +1,14 @@
 from discord.ext import commands
 from websocket_client import send_signal
 
-class ServerChat(commands.Cog):
-    """ Commands related to server chat """
+# Setup Cog
+async def setup(bot):
+    await bot.add_cog(ServerChat(bot))
 
+
+""" Commands related to server chat """
+class ServerChat(commands.Cog):
+    
     # Allows changes to the bot
     def __init__(self, bot):
         self.bot = bot
@@ -16,7 +21,3 @@ class ServerChat(commands.Cog):
             return
         await ctx.reply(f"Message to server: {message}", ephemeral=True)
         await send_signal("SERVER_CHAT", {"message": message}, ctx)
-
-
-async def setup(bot):
-    await bot.add_cog(ServerChat(bot))
