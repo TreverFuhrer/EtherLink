@@ -32,17 +32,25 @@ async def on_ready():
     except Exception as e:
         print(f"Error synchronizing commands: {e}")
 
+
 """ Load all discord commands """
 async def load_cogs():
-    for filename in os.listdir("./commands"):
+    """Dynamically load all cogs from the commands folder."""
+    # Get the absolute path to the current file (discord_bot.py)
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    commands_dir = os.path.join(base_dir, "commands")  # Navigate to the commands directory
+
+    if not os.path.exists(commands_dir):
+        raise FileNotFoundError(f"Commands directory not found: {commands_dir}")
+
+    for filename in os.listdir(commands_dir):
         if filename.endswith(".py") and filename != "__init__.py":
-            # Load the cog dynamically
             try:
+                # Load cogs using the path relative to the bot package
                 await bot.load_extension(f"commands.{filename[:-3]}")
                 print(f"Loaded cog: {filename}")
             except Exception as e:
                 print(f"Failed to load cog {filename}: {e}")
-
 
 
 
