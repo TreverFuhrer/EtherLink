@@ -29,7 +29,7 @@ class LoreUpdate(commands.Cog):
         if not any(role.name == "Admin" for role in ctx.author.roles):
             await ctx.reply("You don't have the required role to use this command.", ephemeral=True)
             return
-        
+        '''
         input_channel = self.bot.get_channel(INPUT_CHANNEL_ID)
         messages = await input_channel.history(limit=30).flatten()
 
@@ -44,7 +44,10 @@ class LoreUpdate(commands.Cog):
             "Here are the last 30 important messages from our Discord server:\n\n"
             + "\n".join(message_data)
             + "\n\nBased on this, write a creative daily lore update for this Minecraft server:"
-        )
+        )'''
+
+        # Test prompt
+        prompt = ("Write a creative, fantasy daily lore update for this Minecraft server, make everything up:")
 
         # Generate the lore update
         try:
