@@ -57,6 +57,7 @@ class LoreUpdate(commands.Cog):
         # Generate the lore update
         try:
             response = self.generator(prompt, max_length=300, do_sample=True, truncation=True)
+            print(lore_update + "\n\n\n")
             lore_update = response[0]["generated_text"]
             print(lore_update + "\n\n\n")
         except Exception as e:
