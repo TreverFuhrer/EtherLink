@@ -4,7 +4,6 @@ import websockets
 import os
 from dotenv import load_dotenv
 from handlers import chat_handler
-#, whitelist_handler  # Import event handlers
 
 load_dotenv()
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
@@ -13,7 +12,6 @@ WEBSOCKET_URL = os.getenv("WEBSOCKET_URL")
 # Event dictionary: Maps events to handler functions
 EVENTS = {
     "CHAT_MESSAGE": chat_handler.process_chat_message
-    #"WHITELIST_REQUEST": whitelist_handler.process_whitelist_request
 }
 
 # Global Variable
@@ -88,8 +86,3 @@ async def send_signal(message_type, data, interaction):
     else:
         await interaction.followup.send("Error, connot send command.\nWebSocket connection not established.", ephemeral=True)
         print("WebSocket connection not established.")
-
-
-# Start client
-def start_websocket_client():
-    asyncio.create_task(connect_to_websocket())
