@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-
 HUGGING_FACE_API_TOKEN = os.getenv("HUGGING_FACE_API_TOKEN")
 INPUT_CHANNEL_ID = 1306010586143916086
 OUTPUT_CHANNEL_ID = 1303443844138008778
@@ -16,18 +15,17 @@ class LoreUpdate(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        model = AutoModelForCausalLM.from_pretrained(
-            "EleutherAI/gpt-neo-1.3B",
-            token=HUGGING_FACE_API_TOKEN  # Updated to `token`
-        )
-        tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-1.3B")
-        self.generator = pipeline("text-generation", model=model, tokenizer=tokenizer, truncation=True, pad_token_id=tokenizer.eos_token_id)
+        model_name = "EleutherAI/gpt-neo-1.3B"
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, token=HUGGING_FACE_API_TOKEN)
+        self.model = AutoModelForCausalLM.from_pretrained(model_name, token=HUGGING_FACE_API_TOKEN)
+        self.generator = pipeline("text-generation", model=self.model, tokenizer=self.tokenizer)
 
 
 
     """ Server Chat Command """
     @commands.hybrid_command(name="lore_update", description="Trev's test command for something secret")
     async def lore_update(self, ctx: commands.Context):
+        await ctx.defer(ephemeral=True)
 
         # Check if user has "Admin" role
         if not any(role.name == "Admin" for role in ctx.author.roles):
