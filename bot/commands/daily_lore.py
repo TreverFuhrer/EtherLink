@@ -52,12 +52,12 @@ class LoreUpdate(commands.Cog):
         )'''
 
         # Test prompt
-        prompt = ("Write a creative, fantasy daily lore update for this Minecraft server, make everything up:")
+        prompt = ("Write a creative, fantasy daily lore update for this Minecraft server:")
 
         print(prompt + "\n\n\n")
         # Generate the lore update
         try:
-            response = self.generator(prompt, max_length=10, do_sample=True, truncation=True)
+            response = self.generator(prompt, max_length=50, do_sample=True, truncation=True)
             print(lore_update + "\n\n\n")
             lore_update = response[0]["generated_text"]
             print(lore_update + "\n\n\n")
