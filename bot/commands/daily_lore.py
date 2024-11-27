@@ -18,10 +18,11 @@ class LoreUpdate(commands.Cog):
 
         model = AutoModelForCausalLM.from_pretrained(
             "EleutherAI/gpt-neo-1.3B",
-            use_auth_token=HUGGING_FACE_API_TOKEN
+            token=HUGGING_FACE_API_TOKEN  # Updated to `token`
         )
         tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-1.3B")
-        self.generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
+        self.generator = pipeline("text-generation", model=model, tokenizer=tokenizer, truncation=True, pad_token_id=tokenizer.eos_token_id)
+
 
 
     """ Server Chat Command """
@@ -55,7 +56,7 @@ class LoreUpdate(commands.Cog):
         print(prompt + "\n\n\n")
         # Generate the lore update
         try:
-            response = self.generator(prompt, max_length=300, do_sample=True)
+            response = self.generator(prompt, max_length=300, do_sample=True, truncation=True)
             lore_update = response[0]["generated_text"]
             print(lore_update + "\n\n\n")
         except Exception as e:
