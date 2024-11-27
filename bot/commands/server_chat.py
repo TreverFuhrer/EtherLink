@@ -16,3 +16,7 @@ class ServerChat(commands.Cog):
             return
         await ctx.reply(f"Message to server: {message}", ephemeral=True)
         await send_signal("SERVER_CHAT", {"message": message}, ctx)
+
+
+async def setup(bot):
+    await bot.add_cog(ServerChat(bot))

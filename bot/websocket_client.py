@@ -78,11 +78,11 @@ async def send_signal(message_type, data):
         print("WebSocket connection not established.")
 
 # Send signal message to plugin
-async def send_signal(message_type, data, interaction):
+async def send_signal(message_type, data, ctx):
     """Send a JSON message to the WebSocket server."""
     if plugin_connection:
         signal = {"type": message_type, **data}
         await plugin_connection.send(json.dumps(signal))
     else:
-        await interaction.followup.send("Error, connot send command.\nWebSocket connection not established.", ephemeral=True)
+        await ctx.reply("Error, connot send command.\nWebSocket connection not established.", ephemeral=True)
         print("WebSocket connection not established.")
