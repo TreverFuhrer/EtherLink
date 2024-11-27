@@ -11,7 +11,7 @@ class Help(commands.Cog):
 
     """ Help Command """
     @commands.hybrid_command(name="help", description="Command inoformation!")
-    async def help(self, ctx: commands.Context, message: str):
+    async def help(self, ctx: commands.Context):
         # Create new embed message
         embed = discord.Embed(
             title = "Commands",
@@ -25,7 +25,7 @@ class Help(commands.Cog):
 
     """ Help Mod Command """
     @commands.hybrid_command(name="helpmod", description="Command inoformation!")
-    async def helpmod(self, ctx: commands.Context, message: str):
+    async def helpmod(self, ctx: commands.Context):
 
         # Check if user has permissions
         if not any(role.name in ["Admin", "SMP Mod"] for role in ctx.author.roles):
@@ -37,13 +37,21 @@ class Help(commands.Cog):
             title = "Mod Commands",
             color = discord.Color.dark_green()
         )
-        embed.add_field(name="/whitelist", value="This whitelists a Java or Bedrock user. If used in same chat they typed their username, will react to it with a green checkmark.", inline=True)
+        embed.add_field(
+            name="/whitelist",
+            value=(
+                "This whitelists a Java or Bedrock user. "
+                "If used in the same chat they typed their username, it will react to it with a green checkmark."
+            ),
+            inline=True
+        )
         
-         # Send embed message
+        # Send embed message
         await ctx.reply(embed=embed, ephemeral=True)
 
 
 
 # Setup Cog
 async def setup(bot):
+    bot.remove_command("help")
     await bot.add_cog(Help(bot))
