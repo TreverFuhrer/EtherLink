@@ -1,5 +1,5 @@
 from discord.ext import commands
-from transformers import pipeline
+from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
 from dotenv import load_dotenv
 import os
 
@@ -15,11 +15,14 @@ class LoreUpdate(commands.Cog):
     # Allows changes to the bot
     def __init__(self, bot):
         self.bot = bot
-        self.generator = pipeline(
-            "text-generation", 
-            model = "EleutherAI/gpt-neo-1.3B", 
-            use_auth_token = HUGGING_FACE_API_TOKEN
+
+        model = AutoModelForCausalLM.from_pretrained(
+            "EleutherAI/gpt-neo-1.3B",
+            use_auth_token=HUGGING_FACE_API_TOKEN
         )
+        tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-1.3B")
+        self.generator = pipeline("text-generation", model=model, tokenizer=tokenizer)
+
 
     """ Server Chat Command """
     @commands.hybrid_command(name="lore_update", description="Trev's test command for something secret")
@@ -49,10 +52,12 @@ class LoreUpdate(commands.Cog):
         # Test prompt
         prompt = ("Write a creative, fantasy daily lore update for this Minecraft server, make everything up:")
 
+        print(prompt + "\n\n\n")
         # Generate the lore update
         try:
             response = self.generator(prompt, max_length=300, do_sample=True)
             lore_update = response[0]["generated_text"]
+            print(lore_update + "\n\n\n")
         except Exception as e:
             await ctx.reply(f"Error generating lore: {str(e)}", ephemeral=True)
             return
