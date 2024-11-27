@@ -61,8 +61,8 @@ class LoreUpdate(commands.Cog):
             return
 
         # Send the generated lore update to the output channel
-        await output_channel.send(f"**Daily Lore Update:**\n{lore_update}")
-        await ctx.reply("Lore update successfully generated and sent to the output channel.", ephemeral=True)
+        await ctx.reply(f"**Daily Lore Update:**\n{lore_update}")
+        #await ctx.reply("Lore update successfully generated and sent to the output channel.", ephemeral=True)
 
 
 
