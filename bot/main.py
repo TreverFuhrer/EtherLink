@@ -4,7 +4,7 @@ from websocket_client import start_websocket_client
 
 # Start bot and WebSocket together
 async def main():
-    await asyncio.to_thread(start_websocket_client)
+    await start_websocket_client()
     await load_cogs()
     await bot.start(DISCORD_TOKEN)
 
