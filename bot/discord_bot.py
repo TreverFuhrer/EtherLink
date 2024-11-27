@@ -52,27 +52,3 @@ async def load_cogs():
             except Exception as e:
                 print(f"Failed to load cog {filename}: {e}")
 
-
-
-
-
-
-
-
-
-
-'''@bot.tree.command(name="lore_update", description="Trev's test command for something secret")
-async def server_chat(interaction: discord.Interaction):
-    # Check if user has "Admin" role
-    if not any(role.name == "Admin" for role in interaction.user.roles):
-        await interaction.response.send_message("You don't have the required role to use this command.", ephemeral=True)
-    else:
-        # Send immediate response to avoid delay
-        await interaction.response.send_message("Making a lore update...", ephemeral=True)
-        
-        # Run the blocking daily_lore_update function in a separate thread
-        loop = asyncio.get_running_loop()
-        await loop.run_in_executor(None, daily_lore_update)
-        
-        # Optionally, send a follow-up message once the task is complete (if necessary)
-        await interaction.followup.send("Lore update complete.", ephemeral=True)'''
