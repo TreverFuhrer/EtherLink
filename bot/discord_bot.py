@@ -2,9 +2,6 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
-import asyncio
-from events.whitelist_command import get_whitelist_delim
-#from events.lore_book import daily_lore_update
 
 load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
@@ -36,9 +33,12 @@ async def on_ready():
 """ Load all discord commands """
 async def load_cogs():
     """Dynamically load all cogs from the commands folder."""
+    
     # Get the absolute path to the current file (discord_bot.py)
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    commands_dir = os.path.join(base_dir, "commands")  # Navigate to the commands directory
+
+    # Navigate to the commands directory
+    commands_dir = os.path.join(base_dir, "commands")
 
     if not os.path.exists(commands_dir):
         raise FileNotFoundError(f"Commands directory not found: {commands_dir}")

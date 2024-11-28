@@ -15,7 +15,6 @@ class LoreUpdate(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-
     """ Server Chat Command """
     @commands.hybrid_command(name="lore_update", description="Trev's test command for something secret")
     async def lore_update(self, ctx: commands.Context):
@@ -27,7 +26,7 @@ class LoreUpdate(commands.Cog):
             return
 
         # Test prompt
-        prompt = ("Write a creative, fantasy daily lore update for this Minecraft server:")
+        prompt = ("Write a creative, fantasy story of Minecraft lore for the Neo SMP server in one big paragraph:")
         print(prompt + "\n\n\n")
 
         # Generate the lore update
@@ -52,7 +51,7 @@ class LoreUpdate(commands.Cog):
             return
 
         # Send the generated lore update to the output channel
-        await ctx.reply(f"**Daily Lore Update:**\n{lore_update}")
+        await ctx.reply(f"**Daily Lore Update:**\n{lore_update}", ephemeral=False)
         #await ctx.reply("Lore update successfully generated and sent to the output channel.", ephemeral=True)
 
 
