@@ -26,18 +26,18 @@ class LoreUpdate(commands.Cog):
             return
 
         # Test prompt
-        prompt = ("Write a creative, fantasy story of Minecraft lore for the Neo SMP server in one big paragraph:")
+        prompt = ("Write one large paragraph that is a creative, fantasy story of lore for the Neo SMP Minecraft server:")
         print(prompt + "\n\n\n")
 
         # Generate the lore update
         try:
-            client = InferenceClient(token=HUGGING_FACE_API_TOKEN, model="EleutherAI/gpt-neo-1.3B")
+            client = InferenceClient(token=HUGGING_FACE_API_TOKEN, model="meta-llama/Llama-2-7b-Instruct")
             lore_update = client.text_generation(
                 prompt,
                 max_new_tokens=300,  # Maximum tokens to generate
-                temperature=0.7,     # Adjust randomness
+                temperature=0.8,     # Adjust randomness
                 top_k=50,            # Top-k sampling
-                top_p=0.95           # Top-p sampling for nucleus sampling
+                top_p=0.9           # Top-p sampling for nucleus sampling
             )
             print(lore_update + "\n\n\n")
         except Exception as e:
@@ -51,8 +51,8 @@ class LoreUpdate(commands.Cog):
             return
 
         # Send the generated lore update to the output channel
-        await ctx.reply(f"**Daily Lore Update:**\n{lore_update}", ephemeral=False)
-        #await ctx.reply("Lore update successfully generated and sent to the output channel.", ephemeral=True)
+        await output_channel.send(f"**Daily Lore Update:**\n{lore_update}")
+        await ctx.reply("Lore update successfully generated and sent to the output channel.", ephemeral=True)
 
 
 
