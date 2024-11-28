@@ -31,7 +31,7 @@ class LoreUpdate(commands.Cog):
 
         # Generate the lore update
         try:
-            client = InferenceClient(token=HUGGING_FACE_API_TOKEN, model="meta-llama/Llama-2-7b-Instruct")
+            client = InferenceClient(token=HUGGING_FACE_API_TOKEN, model="meta-llama/Llama-2-7b")
             lore_update = client.text_generation(
                 prompt,
                 max_new_tokens=300,  # Maximum tokens to generate
