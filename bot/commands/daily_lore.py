@@ -1,8 +1,6 @@
 from discord.ext import commands
-from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
-import requests
 import os
 
 load_dotenv()
@@ -34,13 +32,14 @@ class LoreUpdate(commands.Cog):
 
         # Generate the lore update
         try:
-            client = InferenceClient(token=HUGGING_FACE_API_TOKEN)
-            lore_update = client.text_generation(prompt, parameters={
-                "max_new_tokens": 300,  # Maximum number of tokens to generate
-                "temperature": 0.7,    # Sampling temperature
-                "top_k": 50,           # Top-k sampling
-                "top_p": 0.95          # Top-p sampling
-            })
+            client = InferenceClient(token=HUGGING_FACE_API_TOKEN, model="EleutherAI/gpt-neo-1.3B")
+            lore_update = client.text_generation(
+                prompt,
+                max_new_tokens=300,  # Maximum tokens to generate
+                temperature=0.7,     # Adjust randomness
+                top_k=50,            # Top-k sampling
+                top_p=0.95           # Top-p sampling for nucleus sampling
+            )
             print(lore_update + "\n\n\n")
         except Exception as e:
             await ctx.reply(f"Error generating lore: {str(e)}", ephemeral=True)
