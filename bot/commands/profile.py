@@ -12,7 +12,7 @@ class Profile(commands.Cog):
 
     """ Server Chat Command """
     @commands.hybrid_command(name="profile", description="See a uses NeoSMP user profile!")
-    async def profile(self, ctx: commands.Context, message: str):
+    async def profile(self, ctx: commands.Context, username: str):
         
         if str.startswith("."):
             str = str[1:] # Remove . from start of name

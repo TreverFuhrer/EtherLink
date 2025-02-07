@@ -10,8 +10,10 @@ class Help(commands.Cog):
         self.bot = bot
 
     """ Help Command """
-    @commands.hybrid_command(name="help", description="Command inoformation!")
+    @commands.hybrid_command(name="help", description="Command information!")
     async def help(self, ctx: commands.Context):
+        """ Displays all possible commands for basic user """
+
         # Create new embed message
         embed = discord.Embed(
             title = "Commands",
@@ -24,8 +26,9 @@ class Help(commands.Cog):
 
 
     """ Help Mod Command """
-    @commands.hybrid_command(name="helpmod", description="Command inoformation!")
+    @commands.hybrid_command(name="helpmod", description="Command information!")
     async def helpmod(self, ctx: commands.Context):
+        """ Displays all possible commands mods can use """
 
         # Check if user has permissions
         if not any(role.name in ["Admin", "SMP Mod"] for role in ctx.author.roles):
