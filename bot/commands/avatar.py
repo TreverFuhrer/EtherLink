@@ -11,7 +11,7 @@ class Avatar(commands.Cog):
         self.bot = bot
 
     """ Server Chat Command """
-    @commands.hybrid_command(name="avatar", description="See a uses NeoSMP user profile!")
+    @commands.hybrid_command(name="avatar", description="See a users NeoSMP user profile!")
     async def avatar(self, ctx: commands.Context, username: str):
         
         # Check if Bedrock player

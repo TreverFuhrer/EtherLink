@@ -53,36 +53,61 @@ async def connect_to_websocket():
 
 # Handle incoming signal message
 async def handle_signals(websocket):
-    signal = await websocket.recv()
-    #print(f"Received from Minecraft server: {signal}")
-                
-    # Parse the signal as JSON
+    """ Handles incoming WebSocket messages. """
+    signal = await websocket.recv()                
     data = json.loads(signal)
     event_type = data.get("type")
+    request_id = data.get("request_id")
 
-    # Route the signal to the correct event handler
-    handler = EVENTS.get(event_type)
-    if handler:
-        await handler(data)
+    # Check if this is a response to a pending request
+    if request_id and request_id in pending_requests:
+        pending_requests[request_id].set_result(data)
     else:
-        print(f"Unrecognized event type: {event_type}")
+        # Route the signal to the correct event handler
+        handler = EVENTS.get(event_type)
+        if handler:
+            await handler(data)
+        else:
+            print(f"Unrecognized event type: {event_type}")
 
 
 # Send signal message to plugin
-async def send_signal(message_type, data):
+async def send_signal(message_type, data, ctx=None):
     """Send a JSON message to the WebSocket server."""
     if plugin_connection:
         signal = {"type": message_type, **data}
         await plugin_connection.send(json.dumps(signal))
     else:
-        print("WebSocket connection not established.")
+        error_msg = "Error, WebSocket connection not established."
+        if ctx:
+            await ctx.reply(error_msg, ephemeral=True)  # Send error message to the user
+        else:
+            print(error_msg)
 
-# Send signal message to plugin
-async def send_signal(message_type, data, ctx):
-    """Send a JSON message to the WebSocket server."""
-    if plugin_connection:
-        signal = {"type": message_type, **data}
-        await plugin_connection.send(json.dumps(signal))
-    else:
-        await ctx.reply("Error, connot send command.\nWebSocket connection not established.", ephemeral=True)
-        print("WebSocket connection not established.")
+
+pending_requests = {}
+
+async def send_request(message_type, data, timeout=5):
+    """ Sends a request to the WebSocket server and waits for a response. """
+    if not plugin_connection:
+        return {"error": "WebSocket connection not established"}
+
+    # Create a unique request ID
+    request_id = f"{message_type}-{data.get('username', 'unknown')}-{os.urandom(4).hex()}"
+    data["request_id"] = request_id  # Attach request ID
+
+    # Create an asyncio.Future to wait for a response
+    future = asyncio.Future()
+    pending_requests[request_id] = future
+
+    try:
+        # Send the request
+        await plugin_connection.send(json.dumps({"type": message_type, **data}))
+
+        # Wait for response or timeout
+        response = await asyncio.wait_for(future, timeout)
+        return response
+    except asyncio.TimeoutError:
+        return {"error": "Request timed out"}
+    finally:
+        pending_requests.pop(request_id, None)  # Cleanup
