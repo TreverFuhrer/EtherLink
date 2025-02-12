@@ -43,4 +43,5 @@ class Profile(commands.Cog):
 
 # Setup Cog
 async def setup(bot):
+    bot.remove_command("profile")
     await bot.add_cog(Profile(bot))

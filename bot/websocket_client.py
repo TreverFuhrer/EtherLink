@@ -4,7 +4,7 @@ import websockets
 import os
 from dotenv import load_dotenv
 from handlers import chat_handler
-from database import get_all_servers
+from database import get_all_servers, get_discord_id
 
 load_dotenv()
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
@@ -35,7 +35,7 @@ async def connect_to_websockets(discord_id, websocket_url):
 
                 # Start listening for messages
                 while True:
-                    await handle_signals(websocket, discord_id)
+                    await handle_signals(websocket)
 
         except Exception as e:
             print(f"WebSocket connection lost for {websocket_url}. Retrying in {sleep_duration} seconds...")
@@ -49,20 +49,18 @@ async def initialize_connections():
     print(get_all_servers())
     servers = get_all_servers()
     for discord_id, server in servers.items():
-        print("discord_id: " + str(discord_id))
-        print("server: " + str(server))
         if "websocket_url" in server and server["websocket_url"]:
-            print("url: "+ server["websocket_url"])
             asyncio.create_task(connect_to_websockets(discord_id, server["websocket_url"]))
 
 
 # Handle incoming messages
-async def handle_signals(websocket, discord_id):
+async def handle_signals(websocket):
     """ Handles incoming WebSocket messages. """
     signal = await websocket.recv()                
     data = json.loads(signal)
     event_type = data.get("type")
     request_id = data.get("request_id")
+    discord_id = get_discord_id(data.get("mc_ip"))
 
     # Check if this is a response to a pending request
     if request_id and request_id in pending_requests:
@@ -71,7 +69,7 @@ async def handle_signals(websocket, discord_id):
         # Route the signal to the correct event handler
         handler = EVENTS.get(event_type)
         if handler:
-            await handler(data)
+            await handler(data, discord_id)
         else:
             print(f"Unrecognized event type: {event_type}")
 

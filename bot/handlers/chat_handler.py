@@ -9,8 +9,7 @@ from database import get_channels
 player_head_cache = {}
 
 # Example chat_handler.py
-async def process_chat_message(data):
-    discord_id = data["discord_id"]
+async def process_chat_message(data, discord_id):
     channels = get_channels(discord_id)
     channel_id = channels["minecraft_chat"]
     username = data["username"]

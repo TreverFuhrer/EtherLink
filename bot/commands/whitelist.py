@@ -13,8 +13,7 @@ class Whitelist(commands.Cog):
 
     """ Whitelist Command """
     @commands.hybrid_command(name="whitelist", description="Whitelist a Java or Bedrock player")
-    async def whitelist(self, ctx: commands.Context, username: str):
-
+    async def whitelist(self, ctx: commands.Context, username: str):        
         # Check if user has permissions
         if not any(role.name in ["Admin", "SMP Mod"] for role in ctx.author.roles):
             await ctx.reply("You don't have the required role to use this command.", ephemeral=True)
@@ -36,7 +35,7 @@ class Whitelist(commands.Cog):
                 await ctx.reply("I lack permission to add reactions to messages.", ephemeral=True)
 
         await ctx.reply(f"Whitelisting {username}!", ephemeral=True)
-        await send_signal("WHITELIST", {"message": f"{ctx.author.name}|{get_whitelist_delim(username)}"}, ctx)
+        await send_signal(ctx.guild.id, "WHITELIST", {"message": f"{ctx.author.name}|{get_whitelist_delim(username)}"}, ctx)
 
 
 

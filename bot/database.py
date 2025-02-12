@@ -67,6 +67,15 @@ def get_channels(discord_id):
         cursor.execute(sql, (discord_id,))
         results = cursor.fetchall()
         return {name: channel_id for channel_id, name in results}
+    
+def get_discord_id(mc_ip):
+    """Retrieves the Discord server ID associated with a Minecraft server IP."""
+    with conn.cursor() as cursor:
+        sql = "SELECT discord_server_id FROM linked_servers WHERE minecraft_server_ip = %s"
+        cursor.execute(sql, (mc_ip,))
+        result = cursor.fetchone()
+        return result[0] if result else None
+
 
 def remove_server(discord_id):
     """Removes a Discord server and all associated channels."""
