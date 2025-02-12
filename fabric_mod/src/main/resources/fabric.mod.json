@@ -15,18 +15,14 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.etherlink.EtherLink"
+			"etherlink.EtherLink"
 		],
 		"client": [
-			"com.etherlink.EtherLinkClient"
+			"etherlink.EtherLinkClient"
 		]
 	},
 	"mixins": [
-		"etherlink.mixins.json",
-		{
-			"config": "etherlink.client.mixins.json",
-			"environment": "client"
-		}
+		"etherlink.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.14.21",
