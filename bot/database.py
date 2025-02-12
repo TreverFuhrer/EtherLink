@@ -87,10 +87,3 @@ def remove_channel(discord_id, channel_name):
     except Exception as e:
         return f"Error removing channel: {e}"
 
-print(get_all_servers())
-print(get_channels(1298047553530626058))
-
-
-# Cache for faster lookups (avoids constant DB queries)
-server_data = {}
-
