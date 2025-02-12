@@ -14,6 +14,7 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 """ On Bot Startup Event """
 @bot.event
 async def on_ready():
+    await bot.tree.sync() # Sync commands to servers
     activity = discord.Activity(type=discord.ActivityType.playing, name="Minecraft")
     await bot.change_presence(status=discord.Status.dnd, activity=activity)
     print("------")
