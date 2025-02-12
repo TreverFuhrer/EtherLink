@@ -1,3 +1,4 @@
+import os
 import pymysql
 import re
 from collections import Counter
@@ -11,11 +12,11 @@ model = GPT2LMHeadModel.from_pretrained("gpt2")
 model.eval()
 
 # Database credentials
-DB_HOST = 'db-buf-05.sparkedhost.us'
-DB_PORT = 3306
-DB_USER = 'u153480_Z7VMvQjk5K'
-DB_PASSWORD = '18A+eB4j4JXyiSSG+Kr^MKBq'
-DB_NAME = 's153480_LoreDiary'
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = int(os.getenv("DB_PORT"))
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_NAME2 = os.getenv("DB_NAME2")
 
 # Connect to the database
 try:
@@ -24,7 +25,7 @@ try:
         port=DB_PORT,
         user=DB_USER,
         password=DB_PASSWORD,
-        database=DB_NAME
+        database=DB_NAME2
     )
 except pymysql.MySQLError as e:
     print("Error connecting to the database:", e)

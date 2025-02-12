@@ -2,13 +2,17 @@ import discord
 from discord_bot import bot
 import hashlib
 import aiohttp
+from database import get_channels
 #from events.lore_book import store_chat_log
 
-DISCORD_CHANNEL_ID = 1306010586143916086
+
 player_head_cache = {}
 
 # Example chat_handler.py
 async def process_chat_message(data):
+    discord_id = data["discord_id"]
+    channels = get_channels(discord_id)
+    channel_id = channels["minecraft_chat"]
     username = data["username"]
     message = data["message"]
     clean_message = message.strip('"')
@@ -36,7 +40,7 @@ async def process_chat_message(data):
     embed.set_author(name=username, icon_url=head_image_url)
 
     # Send embed in discord
-    channel = bot.get_channel(DISCORD_CHANNEL_ID)
+    channel = bot.get_channel(channel_id)
     await channel.send(embed=embed)
 
 

@@ -4,6 +4,7 @@ import websockets
 import os
 from dotenv import load_dotenv
 from handlers import chat_handler
+from database import get_all_servers, get_websocket_url
 
 load_dotenv()
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
@@ -15,44 +16,44 @@ EVENTS = {
 }
 
 # Global Variable
-plugin_connection = None
+active_websockets = {}
 
 # Connect bot to plugin websocket server
-async def connect_to_websocket():
-    global plugin_connection
-    attempts = 0
+async def connect_to_websockets(discord_id, websocket_url):
+    """Connects to a Minecraft server WebSocket and listens for messages."""
     sleep_duration = 10
-    if (attempts > 12):
-        sleep_duration = 60
-
+    attempts = 0
+    
     while True:
+        if (attempts > 12):
+            sleep_duration = 60
         try:
-            async with websockets.connect(
-                WEBSOCKET_URL,
-                extra_headers={"AUTH_TOKEN": AUTH_TOKEN}
+            async with websockets.connect(websocket_url, extra_headers={"AUTH_TOKEN": AUTH_TOKEN}
             ) as websocket:
                 print("Connected to the WebSocket server.")
-                plugin_connection = websocket
-                # Handle plugin signal messages
+                active_websockets[discord_id] = websocket
+
+                # Start listening for messages
                 while True:
-                    await handle_signals(websocket)
-        except (websockets.ConnectionClosedError, ConnectionRefusedError) as e:
-            print(f"WebSocket connection lost: {e}. Retrying in {sleep_duration} seconds...")
-            plugin_connection = None
-            attempts += 1
-            await asyncio.sleep(sleep_duration) # Wait before retrying
-        except OSError as e:
-            print(f"Connection attempt failed: {e}. Retrying in {sleep_duration} seconds...")
-            plugin_connection = None
-            attempts += 1
-            await asyncio.sleep(sleep_duration) # Wait before retrying
+                    await handle_signals(websocket, discord_id)
+
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            print(f"WebSocket connection lost for {websocket_url}. Retrying in {sleep_duration} seconds...")
+            attempts += 1
+            active_websockets.pop(discord_id, None)
             await asyncio.sleep(sleep_duration) # Wait before retrying
 
 
-# Handle incoming signal message
-async def handle_signals(websocket):
+async def initialize_connections():
+    """Loads all linked servers and connects to their WebSockets on startup."""
+    servers = get_all_servers()
+    for discord_id, server in servers.items():
+        if "websocket_url" in server and server["websocket_url"]:
+            asyncio.create_task(connect_to_websockets(discord_id, server["websocket_url"]))
+
+
+# Handle incoming messages
+async def handle_signals(websocket, discord_id):
     """ Handles incoming WebSocket messages. """
     signal = await websocket.recv()                
     data = json.loads(signal)
@@ -72,24 +73,27 @@ async def handle_signals(websocket):
 
 
 # Send signal message to plugin
-async def send_signal(message_type, data, ctx=None):
+async def send_signal(discord_id, message_type, data, ctx=None):
     """Send a JSON message to the WebSocket server."""
-    if plugin_connection:
-        signal = {"type": message_type, **data}
-        await plugin_connection.send(json.dumps(signal))
+    ws = active_websockets.get(discord_id)
+    if ws:
+        signal = {"discord_id": discord_id, "type": message_type, **data}
+        await ws.send(json.dumps(signal))
     else:
         error_msg = "Error, WebSocket connection not established."
         if ctx:
-            await ctx.reply(error_msg, ephemeral=True)  # Send error message to the user
+            await ctx.reply(error_msg, ephemeral=True)
         else:
             print(error_msg)
 
 
+# Send requests for data
 pending_requests = {}
 
-async def send_request(message_type, data, timeout=5):
+async def send_request(discord_id, message_type, data, timeout=5):
     """ Sends a request to the WebSocket server and waits for a response. """
-    if not plugin_connection:
+
+    if discord_id not in active_websockets:
         return {"error": "WebSocket connection not established"}
 
     # Create a unique request ID
@@ -102,7 +106,9 @@ async def send_request(message_type, data, timeout=5):
 
     try:
         # Send the request
-        await plugin_connection.send(json.dumps({"type": message_type, **data}))
+        ws = active_websockets.get(discord_id)
+        signal = {"discord_id": discord_id, "type": message_type, **data}
+        await ws.send(json.dumps(signal))
 
         # Wait for response or timeout
         response = await asyncio.wait_for(future, timeout)
