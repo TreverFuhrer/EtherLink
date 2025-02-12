@@ -16,7 +16,7 @@ class ServerChat(commands.Cog):
             await ctx.reply("You don't have the required role to use this command.", ephemeral=True)
             return
         await ctx.reply(f"Message to server: {message}", ephemeral=True)
-        await send_signal("SERVER_CHAT", {"message": message}, ctx)
+        await send_signal(ctx.guild.id,"SERVER_CHAT", {"message": message}, ctx)
 
 
 
