@@ -4,7 +4,7 @@ import websockets
 import os
 from dotenv import load_dotenv
 from handlers import chat_handler
-from database import get_all_servers, get_websocket_url
+from database import get_all_servers
 
 load_dotenv()
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
