@@ -5,8 +5,6 @@ import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public class ChatMessageMixin {
-    private static final Logger LOGGER = LoggerFactory.getLogger("etherlink");
     private final InitWebSocket ws;
 
     public ChatMessageMixin(InitWebSocket webSocket) {
@@ -44,7 +41,5 @@ public class ChatMessageMixin {
 
         // Send to Discord bot
         ws.sendSignal(json.toString());
-
-        LOGGER.info("Processed chat message from {}: {}", username, message);
     }
 }

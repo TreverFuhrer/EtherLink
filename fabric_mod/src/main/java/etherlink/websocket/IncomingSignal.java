@@ -4,6 +4,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
 import org.json.JSONObject;
 
+import etherlink.handlers.WhitelistHandler;
+
 
 public class IncomingSignal {
 
@@ -23,8 +25,8 @@ public class IncomingSignal {
     public static void routeSignal(String signal) {
         JSONObject json = new JSONObject(signal);
         String eventType = json.getString("type");
-        String data = json.optString("message", "");
-        String requestId = json.optString("request_id", "");
+        String data = json.optString("message");
+        //String requestId = json.optString("request_id", "");
 
         switch (eventType) {
             case "CHAT_MESSAGE":
@@ -34,7 +36,7 @@ public class IncomingSignal {
                 consoleCommand("say " + data);
                 break;
             case "WHITELIST":
-                //WhitelistHandler.handleWhitelist(json);/////////////////////////////////////////////////////////
+                WhitelistHandler.handleWhitelist(data);
                 break;
             default:
                 System.out.println("[EtherLink] Unknown event type: " + eventType);
