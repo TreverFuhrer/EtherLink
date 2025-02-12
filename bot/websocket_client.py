@@ -46,9 +46,13 @@ async def connect_to_websockets(discord_id, websocket_url):
 
 async def initialize_connections():
     """Loads all linked servers and connects to their WebSockets on startup."""
+    print(get_all_servers())
     servers = get_all_servers()
     for discord_id, server in servers.items():
+        print("discord_id: " + discord_id)
+        print("server: " + server)
         if "websocket_url" in server and server["websocket_url"]:
+            print("url: "+ server["websocket_url"])
             asyncio.create_task(connect_to_websockets(discord_id, server["websocket_url"]))
 
 
