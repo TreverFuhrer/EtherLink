@@ -39,11 +39,14 @@ def add_server(discord_id, mc_ip, websocket_url):
         return "This Discord server is already linked to a Minecraft server."
 
 def get_all_servers():
-    """Returns a dictionary of all linked Discord servers and their WebSocket URLs."""
+    """Returns a dictionary of all Discord servers and their WebSocket URLs."""
     with conn.cursor() as cursor:
-        cursor.execute("SELECT discord_server_id, websocket_url FROM linked_servers")
+        cursor.execute("SELECT discord_server_id, minecraft_server_ip, websocket_url FROM linked_servers")
         results = cursor.fetchall()
-        return {discord_id: websocket_url for discord_id, websocket_url in results}
+        return {
+            discord_id: {"minecraft_server_ip": mc_ip, "websocket_url": websocket_url}
+            for discord_id, mc_ip, websocket_url in results
+        }
 
 def add_channel(discord_id, channel_id, channel_name):
     """Adds a new channel to the linked Discord server."""
