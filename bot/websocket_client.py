@@ -79,7 +79,7 @@ async def send_signal(discord_id, message_type, data, ctx=None):
     """Send a JSON message to the WebSocket server."""
     ws = active_websockets.get(discord_id)
     if ws:
-        signal = {"discord_id": discord_id, "type": message_type, **data}
+        signal = {"request_id": None, "type": message_type, **data}
         await ws.send(json.dumps(signal))
     else:
         error_msg = "Error, WebSocket connection not established."
@@ -100,7 +100,6 @@ async def send_request(discord_id, message_type, data, timeout=5):
 
     # Create a unique request ID
     request_id = f"{message_type}-{data.get('username', 'unknown')}-{os.urandom(4).hex()}"
-    data["request_id"] = request_id  # Attach request ID
 
     # Create an asyncio.Future to wait for a response
     future = asyncio.Future()
@@ -109,7 +108,7 @@ async def send_request(discord_id, message_type, data, timeout=5):
     try:
         # Send the request
         ws = active_websockets.get(discord_id)
-        signal = {"discord_id": discord_id, "type": message_type, **data}
+        signal = {"request_id": request_id, "type": message_type, **data}
         await ws.send(json.dumps(signal))
 
         # Wait for response or timeout

@@ -24,6 +24,15 @@ public class IncomingSignal {
         JSONObject json = new JSONObject(signal);
         String eventType = json.getString("type");
         String data = json.getString("message");
+        String request_id = json.getString("request_id");
+
+        // Read - important for whitelist vvv
+
+        // Whitelist handler could prob be improved a lot
+        // This is because in it i have data as a string and i parse username and stuff out of it
+        // But in the bot it sends **data which adds the data dictionary to it
+        // So if the data dic has the username and stuff then i can just put the jsonObj into handleWhitelist
+        // And with the jsonObj i can just do json.getString("username") or for request_id
 
         switch (eventType) {
             case "CHAT_MESSAGE":
