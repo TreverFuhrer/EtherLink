@@ -8,7 +8,9 @@ import java.net.URISyntaxException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.toki.neoplugin.websocket.InitWebSocket;
+
+import etherlink.websocket.InitWebSocket;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class EtherLink implements ModInitializer {
 	// This logger is used to write text to the console and the log file.
@@ -30,7 +32,7 @@ public class EtherLink implements ModInitializer {
             int port = uri.getPort();
 
             // Initialize WebSocket and start connection
-            webSocket = new InitWebSocket(new InetSocketAddress(host, port), LOGGER);
+            webSocket = new InitWebSocket(new InetSocketAddress(host, port));
             webSocket.start();
             LOGGER.info("[EtherLink] WebSocket client started.");
         } catch (URISyntaxException e) {
@@ -38,14 +40,14 @@ public class EtherLink implements ModInitializer {
         }
 
         // Initialize event listeners
-        IncomingSignal.initialize(this);
+        //IncomingSignal.initialize(this);
         registerListeners();
 
         LOGGER.info("[EtherLink] Mod initialized successfully!");
     }
 
     private void registerListeners() {
-        //ChatListener.register();
+        
         // Add more event listeners here as needed
     }
 }

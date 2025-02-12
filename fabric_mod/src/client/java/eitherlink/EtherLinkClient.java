@@ -1,4 +1,4 @@
-package com.example;
+package eitherlink;
 
 import net.fabricmc.api.ClientModInitializer;
 

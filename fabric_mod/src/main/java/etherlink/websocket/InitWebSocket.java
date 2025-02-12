@@ -1,4 +1,4 @@
-package org.toki.etherlink.websocket;
+package etherlink.websocket;
 
 import java.net.InetSocketAddress;
 import org.java_websocket.WebSocket;
