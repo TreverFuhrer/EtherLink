@@ -76,7 +76,6 @@ def get_discord_id(mc_ip):
         result = cursor.fetchone()
         return result[0] if result else None
 
-
 def remove_server(discord_id):
     """Removes a Discord server and all associated channels."""
     try:
@@ -98,4 +97,3 @@ def remove_channel(discord_id, channel_name):
         return f"Channel `{channel_name}` has been removed successfully!"
     except Exception as e:
         return f"Error removing channel: {e}"
-
