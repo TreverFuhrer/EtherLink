@@ -32,6 +32,7 @@ async def connect_to_websockets(discord_id, websocket_url):
             ) as websocket:
                 print("Connected to the WebSocket server.")
                 active_websockets[discord_id] = websocket
+                attempts = 0
 
                 # Start listening for messages
                 while True:

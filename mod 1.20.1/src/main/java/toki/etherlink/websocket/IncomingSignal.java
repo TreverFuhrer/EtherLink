@@ -6,9 +6,6 @@ import toki.etherlink.handlers.WhitelistHandler;
 
 import org.json.JSONObject;
 
-//import etherlink.handlers.WhitelistHandler;
-
-
 public class IncomingSignal {
 
     private static MinecraftServer server;
