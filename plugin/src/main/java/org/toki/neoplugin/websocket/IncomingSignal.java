@@ -24,7 +24,7 @@ public class IncomingSignal {
         JSONObject json = new JSONObject(signal);
         String eventType = json.getString("type");
         String data = json.getString("message");
-        String request_id = json.getString("request_id");
+        //String request_id = json.getString("request_id");
 
         // Read - important for whitelist vvv
 
