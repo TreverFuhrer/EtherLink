@@ -61,6 +61,7 @@ async def handle_signals(websocket):
     event_type = data.get("type")
     request_id = data.get("request_id")
     discord_id = get_discord_id(data.get("mc_ip"))
+    print("Recieved signal from: " + discord_id + " of type: " + event_type)
 
     # Check if this is a response to a pending request
     if request_id and request_id in pending_requests:

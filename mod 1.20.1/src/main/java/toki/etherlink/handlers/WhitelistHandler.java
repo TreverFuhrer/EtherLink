@@ -14,7 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class WhitelistHandler {
-    private static final Logger LOGGER = LoggerFactory.getLogger("EtherLink");
+    private static final Logger LOGGER = LoggerFactory.getLogger("etherlink");
     private static MinecraftServer server;
 
     // Register event to get MinecraftServer instance on startup

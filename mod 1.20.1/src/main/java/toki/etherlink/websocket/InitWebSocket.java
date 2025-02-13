@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 public class InitWebSocket extends WebSocketServer {
 
     private WebSocket botConnection = null;
-    private static final Logger LOGGER = LoggerFactory.getLogger("EtherLink");
+    private static final Logger LOGGER = LoggerFactory.getLogger("etherlink");
     private final String AUTH_TOKEN;
 
     public InitWebSocket(InetSocketAddress address) {
@@ -42,7 +42,7 @@ public class InitWebSocket extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String signal) {
         LOGGER.info("[EtherLink] Received message: " + signal);
-        // IncomingSignal.routeSignal(signal);
+        IncomingSignal.routeSignal(signal);
     }
 
     @Override

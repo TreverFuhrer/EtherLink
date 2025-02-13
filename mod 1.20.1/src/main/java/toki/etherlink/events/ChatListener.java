@@ -11,7 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ChatListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger("neoplugin-chatlistener");
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger("etherlink");
     private final InitWebSocket webSocket;
 
     public ChatListener(InitWebSocket webSocket) {
@@ -26,17 +27,17 @@ public class ChatListener {
             String mc_ip = server != null ? server.getServerIp() : "Unknown";
 
             // Convert Text message to JSON format
-            String messageJson = Text.Serializer.toJson(message.getContent());
+            //String messageJson = Text.Serializer.toJson(message.getContent());
+            String chat = message.getContent().getString();
 
             // Create a JSON object for the chat message
             JSONObject json = new JSONObject();
             json.put("mc_ip", mc_ip);
             json.put("type", "CHAT_MESSAGE");
             json.put("username", username);
-            json.put("message", messageJson);
+            json.put("message", chat);
 
             // Log and send the message
-            LOGGER.info(username + ": " + messageJson);
             webSocket.sendSignal(json.toString());
         });
     }

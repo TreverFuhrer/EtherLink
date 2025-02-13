@@ -2,6 +2,7 @@ package toki.etherlink;
 
 import net.fabricmc.api.ModInitializer;
 import toki.etherlink.events.ChatListener;
+import toki.etherlink.handlers.WhitelistHandler;
 import toki.etherlink.websocket.IncomingSignal;
 import toki.etherlink.websocket.InitWebSocket;
 
@@ -48,8 +49,9 @@ public class EtherLink implements ModInitializer {
             LOGGER.error("[EtherLink] Invalid WebSocket URL!", e);
         }
 
-		// Initialize listening for incoming signals
+		// Initialize server instances
 		IncomingSignal.initialize();
+		WhitelistHandler.initialize();
 
 		// Register Events
 		ChatListener chatListener = new ChatListener(webSocket);
