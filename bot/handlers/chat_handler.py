@@ -16,6 +16,8 @@ async def process_chat_message(data, discord_id):
     message = data["message"]
     clean_message = message.strip('"')
 
+    print("Chat message: " + str(username) + ", " + str(message))
+
     #store_chat_log(username, clean_message)
 
     # Get player skin head if not in cache
