@@ -1,6 +1,7 @@
 package toki.etherlink;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import toki.etherlink.events.ChatListener;
 import toki.etherlink.handlers.WhitelistHandler;
 import toki.etherlink.websocket.IncomingSignal;
@@ -16,47 +17,62 @@ import org.slf4j.LoggerFactory;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class EtherLink implements ModInitializer {
-	public static final String MOD_ID = "etherlink";
+    public static final String MOD_ID = "etherlink";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    private InitWebSocket webSocket;
+    private String websocketUrl;
 
-	// This logger is used to write text to the console and the log file.
-	// It is considered best practice to use your mod id as the logger's name.
-	// That way, it's clear which mod wrote info, warnings, and errors.
-	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+    @Override
+    public void onInitialize() {
+        LOGGER.info("[EtherLink] Initializing mod...");
 
-	private InitWebSocket webSocket;
+        // Load environment variables
+        Dotenv dotenv = Dotenv.load();
+        websocketUrl = dotenv.get("WEBSOCKET_URL");
 
-	@Override
-	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
+        // Ensure WebSocket starts on mod initialization
+        startWebSocketServer();
 
-		Dotenv dotenv = Dotenv.load();
+        // Ensure WebSocket restarts on server restart
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            LOGGER.info("[EtherLink] Server restarting... Restarting WebSocket.");
+            startWebSocketServer();
+        });
 
-		LOGGER.info("[EtherLink] Initializing mod...");
+        // Initialize server instances
+        IncomingSignal.initialize();
+        WhitelistHandler.initialize();
 
-        // Initialize WebSocket connection
-        try {
-            URI uri = new URI(dotenv.get("WEBSOCKET_URL"));
-            String host = uri.getHost();
-            int port = uri.getPort();
-
-            // Initialize WebSocket and start connection
-            webSocket = new InitWebSocket(new InetSocketAddress(host, port));
-            webSocket.start();
-            LOGGER.info("[EtherLink] WebSocket server started.");
-        } catch (URISyntaxException e) {
-            LOGGER.error("[EtherLink] Invalid WebSocket URL!", e);
-        }
-
-		// Initialize server instances
-		IncomingSignal.initialize();
-		WhitelistHandler.initialize();
-
-		// Register Events
-		ChatListener chatListener = new ChatListener(webSocket);
+        // Register Events
+        ChatListener chatListener = new ChatListener(webSocket);
         chatListener.register();
 
         LOGGER.info("[EtherLink] Mod initialized successfully!");
-	}
+    }
+
+    private void startWebSocketServer() {
+        if (webSocket != null) {
+            LOGGER.info("[EtherLink] Stopping old WebSocket instance...");
+            try {
+				webSocket.stop();
+			} 
+			catch (InterruptedException e) {
+				LOGGER.error("[EtherLink] ERROR: Couldn't stop websocket.", e);
+			}
+        }
+
+        try {
+            URI uri = new URI(websocketUrl);
+            String host = uri.getHost();
+            int port = uri.getPort();
+
+            // Start WebSocket server
+            webSocket = new InitWebSocket(new InetSocketAddress(host, port));
+            webSocket.start();
+            LOGGER.info("[EtherLink] WebSocket server started successfully.");
+        } 
+		catch (URISyntaxException e) {
+            LOGGER.error("[EtherLink] ERROR: Invalid WebSocket URL!", e);
+        }
+    }
 }
