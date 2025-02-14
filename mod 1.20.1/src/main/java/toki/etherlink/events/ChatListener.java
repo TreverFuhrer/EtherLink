@@ -3,6 +3,7 @@ package toki.etherlink.events;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import toki.etherlink.websocket.InitWebSocket;
 
 import org.json.JSONObject;
@@ -26,15 +27,20 @@ public class ChatListener {
             String mc_ip = server != null ? server.getServerIp() : "Unknown";
 
             // Convert Text message to JSON format
-            //String messageJson = Text.Serializer.toJson(message.getContent());
+            String messageJson = Text.Serializer.toJson(message.getContent());
             String chat = message.getContent().getString();
+            String chat2 = message.getContent().toString();
+            
+            LOGGER.info("1: " + chat);
+            LOGGER.info("2: " + chat2);
+            LOGGER.info("3: " + messageJson);
 
             // Create a JSON object for the chat message
             JSONObject json = new JSONObject();
             json.put("mc_ip", mc_ip);
             json.put("type", "CHAT_MESSAGE");
             json.put("username", username);
-            json.put("message", chat);
+            json.put("message", "lowww tappperrr fadddee");
 
             // Log and send the message
             webSocket.sendSignal(json.toString());

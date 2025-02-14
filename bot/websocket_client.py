@@ -23,16 +23,18 @@ async def connect_to_websockets(discord_id, websocket_url):
     """Connects to a Minecraft server WebSocket and listens for messages."""
     sleep_duration = 10
     attempts = 0
+    if (attempts > 12):
+            sleep_duration = 60
     
     while True:
-        if (attempts > 12):
-            sleep_duration = 60
+        #if (attempts > 12):
+            #sleep_duration = 60
         try:
             async with websockets.connect(websocket_url, extra_headers={"AUTH_TOKEN": AUTH_TOKEN}
             ) as websocket:
                 print("Connected to the WebSocket server.")
                 active_websockets[discord_id] = websocket
-                attempts = 0
+                #attempts = 0
 
                 # Start listening for messages
                 while True:

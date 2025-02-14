@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"name": "NeoSMP-Integration-Suite",
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
+}
