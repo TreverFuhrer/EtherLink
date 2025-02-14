@@ -58,6 +58,7 @@ async def initialize_connections():
 
 # Handle incoming messages
 async def handle_signals(websocket):
+    print("Handling a signal")
     """ Handles incoming WebSocket messages. """
     signal = await websocket.recv()                
     data = json.loads(signal)
