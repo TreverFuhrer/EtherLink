@@ -23,18 +23,16 @@ async def connect_to_websockets(discord_id, websocket_url):
     """Connects to a Minecraft server WebSocket and listens for messages."""
     sleep_duration = 10
     attempts = 0
-    if (attempts > 12):
-            sleep_duration = 60
     
     while True:
-        #if (attempts > 12):
-            #sleep_duration = 60
+        if (attempts > 12):
+            sleep_duration = 60
         try:
             async with websockets.connect(websocket_url, extra_headers={"AUTH_TOKEN": AUTH_TOKEN}
             ) as websocket:
                 print("Connected to the WebSocket server.")
                 active_websockets[discord_id] = websocket
-                #attempts = 0
+                attempts = 0
 
                 # Start listening for messages
                 while True:
@@ -58,14 +56,12 @@ async def initialize_connections():
 
 # Handle incoming messages
 async def handle_signals(websocket):
-    print("Handling a signal")
     """ Handles incoming WebSocket messages. """
     signal = await websocket.recv()                
     data = json.loads(signal)
     event_type = data.get("type")
     request_id = data.get("request_id")
     discord_id = get_discord_id(data.get("mc_ip"))
-    #print("Recieved signal from: " + discord_id + " of type: " + event_type)
 
     # Check if this is a response to a pending request
     if request_id and request_id in pending_requests:
