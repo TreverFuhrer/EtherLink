@@ -19,4 +19,5 @@ async def update_player_count_channel(data, discord_id):
 
     # Rename channel to new player count
     new_name = f"Online: {data.get("player_count", -2)}"
+    print(f"Renaming to Online: {data.get("player_count", -2)}")
     await channel.edit(name=new_name)
