@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
-from bot.database import get_channels, add_channel
-from discord_bot import bot
+from database import get_channels, add_channel
 
 class CreatePlayerCountChannel(commands.Cog):
     """ Commands related to server chat """
