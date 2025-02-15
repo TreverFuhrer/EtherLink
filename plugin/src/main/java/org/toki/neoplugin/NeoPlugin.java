@@ -17,12 +17,14 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public final class NeoPlugin extends JavaPlugin {
 
+    private static NeoPlugin instance;
     private InitWebSocket webSocket;
 
     @Override
     public void onEnable() {
         IncomingSignal.initialize(this);
         Dotenv dotenv = Dotenv.configure().filename(".env").load();
+        instance = this;
 
         try {
             URI uri = new URI(dotenv.get("WEBSOCKET_URL"));
@@ -61,6 +63,11 @@ public final class NeoPlugin extends JavaPlugin {
             e.printStackTrace();
         }
     }    
+
+    // Return instance of plugin
+    public static NeoPlugin getInstance() {
+        return instance;
+    }
 
     /**
      * Registers all listeners into the plugin manager

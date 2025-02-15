@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.json.JSONObject;
+import org.toki.neoplugin.NeoPlugin;
 import org.toki.neoplugin.websocket.InitWebSocket;
 
 
@@ -18,14 +19,22 @@ public class PlayerCountListener implements Listener {
         this.webSocket = webSocket;
     }
 
+    // Join Event
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+    Bukkit.getScheduler().runTaskLater(NeoPlugin.getInstance(), () -> {
+        Bukkit.getLogger().info("[NeoPlugin] Player joined: " + event.getPlayer().getName());
         sendUpdatedPlayerCount();
+    }, 2L);
     }
 
+    // Leave Event
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        sendUpdatedPlayerCount();
+        Bukkit.getScheduler().runTaskLater(NeoPlugin.getInstance(), () -> {
+            Bukkit.getLogger().info("[NeoPlugin] Player left: " + event.getPlayer().getName());
+            sendUpdatedPlayerCount();
+        }, 2L);
     }
 
     // Send signal of type PLAYER_COUNT_UPDATE to websocket client
