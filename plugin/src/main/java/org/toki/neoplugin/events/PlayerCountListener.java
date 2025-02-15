@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitTask;
 import org.json.JSONObject;
 import org.toki.neoplugin.NeoPlugin;
 import org.toki.neoplugin.websocket.InitWebSocket;
@@ -14,6 +15,7 @@ import org.toki.neoplugin.websocket.InitWebSocket;
 public class PlayerCountListener implements Listener {
 
     private final InitWebSocket webSocket;
+    private static BukkitTask scheduledTask = null;
 
     public PlayerCountListener(InitWebSocket webSocket) {
         this.webSocket = webSocket;
@@ -22,19 +24,33 @@ public class PlayerCountListener implements Listener {
     // Join Event
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-    Bukkit.getScheduler().runTaskLater(NeoPlugin.getInstance(), () -> {
-        Bukkit.getLogger().info("[NeoPlugin] Player joined: " + event.getPlayer().getName());
-        sendUpdatedPlayerCount();
-    }, 2L);
+        schedulePlayerCountUpdate();
     }
 
     // Leave Event
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        Bukkit.getScheduler().runTaskLater(NeoPlugin.getInstance(), () -> {
-            Bukkit.getLogger().info("[NeoPlugin] Player left: " + event.getPlayer().getName());
-            sendUpdatedPlayerCount();
-        }, 2L);
+        schedulePlayerCountUpdate();
+    }
+
+    // Combine simultaneous event calls into one
+    private void schedulePlayerCountUpdate() {
+        // Cancel any existing scheduled update to avoid duplicates
+        if (scheduledTask != null && !scheduledTask.isCancelled()) {
+            scheduledTask.cancel();
+        }
+
+        // Schedule a single update for player count after a short delay
+        scheduledTask = Bukkit.getScheduler().runTaskLater(
+            NeoPlugin.getInstance(),
+            this::sendUpdatedPlayerCount,
+            5L // # ticks
+            /*
+             * Pure Vanilla (No proxies)	1-2 ticks (50-100ms)
+             *  Proxies (Geyser/Floodgate)	3-5 ticks (150-250ms)
+             *  Heavy Plugins (VoiceChat)	5 ticks (250ms)
+             */
+        );
     }
 
     // Send signal of type PLAYER_COUNT_UPDATE to websocket client
