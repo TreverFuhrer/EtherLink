@@ -36,7 +36,7 @@ class CreatePlayerCountChannel(commands.Cog):
         new_channel = await guild.create_voice_channel(name="Online: -1", overwrites=overwrites)
         
         # Add channel to database
-        add_channel(ctx.guild.id, "player_count", new_channel.id)
+        add_channel(ctx.guild.id, new_channel.id, "player_count")
         
         # Send embed message
         await ctx.reply("Created channel!", ephemeral=True)

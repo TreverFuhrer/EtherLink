@@ -97,3 +97,6 @@ def remove_channel(discord_id, channel_name):
         return f"Channel `{channel_name}` has been removed successfully!"
     except Exception as e:
         return f"Error removing channel: {e}"
+    
+
+print(get_channels(1298047553530626058))

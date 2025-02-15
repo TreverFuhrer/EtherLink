@@ -20,13 +20,11 @@ public class PlayerCountListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Bukkit.getLogger().info("[NeoPlugin] Player joined: " + event.getPlayer().getName());
         sendUpdatedPlayerCount();
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        Bukkit.getLogger().info("[NeoPlugin] Player left: " + event.getPlayer().getName());
         sendUpdatedPlayerCount();
     }
 
