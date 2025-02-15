@@ -20,6 +20,7 @@ public class ChatListener implements Listener {
 
     @EventHandler
     public void onPlayerChat(AsyncChatEvent event) {
+        if (webSocket == null) return;
         String username = event.getPlayer().getName();
         Component messageComponent = event.message();
         String mc_ip = Bukkit.getServer().getIp();

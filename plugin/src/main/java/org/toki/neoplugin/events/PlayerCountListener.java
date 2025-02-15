@@ -11,6 +11,7 @@ import org.toki.neoplugin.websocket.InitWebSocket;
 
 
 public class PlayerCountListener implements Listener {
+
     private final InitWebSocket webSocket;
 
     public PlayerCountListener(InitWebSocket webSocket) {
@@ -19,16 +20,19 @@ public class PlayerCountListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        Bukkit.getLogger().info("[NeoPlugin] Player joined: " + event.getPlayer().getName());
         sendUpdatedPlayerCount();
     }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        Bukkit.getLogger().info("[NeoPlugin] Player left: " + event.getPlayer().getName());
         sendUpdatedPlayerCount();
     }
 
     // Send signal of type PLAYER_COUNT_UPDATE to websocket client
     private void sendUpdatedPlayerCount() {
+        if (webSocket == null) return;
         Server server = Bukkit.getServer();
         String mc_ip = server.getIp();
         int playerCount = server.getOnlinePlayers().size();
