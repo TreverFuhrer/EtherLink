@@ -3,6 +3,7 @@ import json
 import websockets
 import os
 from dotenv import load_dotenv
+from bot.handlers import joinLeave_handler
 from handlers import chat_handler
 from database import get_all_servers, get_discord_id
 
@@ -12,7 +13,8 @@ WEBSOCKET_URL = os.getenv("WEBSOCKET_URL")
 
 # Event dictionary: Maps events to handler functions
 EVENTS = {
-    "CHAT_MESSAGE": chat_handler.process_chat_message
+    "CHAT_MESSAGE": chat_handler.process_chat_message,
+    "PLAYER_COUNT_UPDATE" : joinLeave_handler.update_player_count_channel
 }
 
 # Global Variable

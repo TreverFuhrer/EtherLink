@@ -30,7 +30,7 @@ public class PlayerCountListener {
         JSONObject json = new JSONObject();
         json.put("mc_ip", mc_ip);
         json.put("type", "PLAYER_COUNT_UPDATE");
-        json.put("playerCount", playerCount);
+        json.put("player_count", playerCount);
 
         // Log and send the message
         webSocket.sendSignal(json.toString());

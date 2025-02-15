@@ -11,7 +11,11 @@ player_head_cache = {}
 # Example chat_handler.py
 async def process_chat_message(data, discord_id):
     channels = get_channels(discord_id)
-    channel_id = channels["minecraft_chat"]
+    channel_id = channels.get("minecraft_chat")
+
+    if channel_id == None:
+        return
+    
     username = data["username"]
     message = data["message"]
     clean_message = message.strip('"')
