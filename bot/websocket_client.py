@@ -3,7 +3,7 @@ import json
 import websockets
 import os
 from dotenv import load_dotenv
-from bot.handlers import joinLeave_handler
+from handlers import joinLeave_handler
 from handlers import chat_handler
 from database import get_all_servers, get_discord_id
 
