@@ -1,4 +1,4 @@
-from bot.database import get_channels, remove_channel
+from database import get_channels, remove_channel
 from discord_bot import bot
 
 async def update_player_count_channel(data, discord_id):
