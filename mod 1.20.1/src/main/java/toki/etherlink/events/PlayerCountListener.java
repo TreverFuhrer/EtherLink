@@ -1,38 +1,61 @@
 package toki.etherlink.events;
 
-import org.json.JSONObject;
-
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.MinecraftServer;
+import org.json.JSONObject;
 import toki.etherlink.websocket.InitWebSocket;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerCountListener {
+    private static final long COOLDOWN_INTERVAL = 302000; // 5 minutes + 2 seconds (ms)
     private final InitWebSocket webSocket;
-
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private long lastUpdateTime = 0;
+    private boolean pendingUpdate = false;
+    
     public PlayerCountListener(InitWebSocket webSocket) {
         this.webSocket = webSocket;
     }
 
     public void register() {
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            sendUpdatedPlayerCount(server);
-        });
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            sendUpdatedPlayerCount(server);
-        });
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> handlePlayerChange(server));
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> handlePlayerChange(server));
+        ServerLifecycleEvents.SERVER_STARTED.register(this::handlePlayerChange);
     }
 
-    // Send signal of type PLAYER_COUNT_UPDATE to websocket client
+    private synchronized void handlePlayerChange(MinecraftServer server) {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastUpdateTime >= COOLDOWN_INTERVAL) {
+            sendUpdatedPlayerCount(server);
+            lastUpdateTime = currentTime;
+        } else if (!pendingUpdate) {
+            pendingUpdate = true;
+            long delay = (COOLDOWN_INTERVAL - (currentTime - lastUpdateTime)) / 1000;
+            scheduler.schedule(() -> {
+                if (pendingUpdate) {
+                    sendUpdatedPlayerCount(server);
+                    pendingUpdate = false;
+                    lastUpdateTime = System.currentTimeMillis();
+                }
+            }, Math.max(2, delay), TimeUnit.SECONDS);
+        }
+    }
+
     private void sendUpdatedPlayerCount(MinecraftServer server) {
-        String mc_ip = server != null ? server.getServerIp() : "Unknown";
-        int playerCount = server.getCurrentPlayerCount();;
-
-        JSONObject json = new JSONObject();
-        json.put("mc_ip", mc_ip);
-        json.put("type", "PLAYER_COUNT_UPDATE");
-        json.put("player_count", playerCount);
-
-        // Log and send the message
-        webSocket.sendSignal(json.toString());
+        try {
+            if (webSocket == null || server == null) return;
+            int playerCount = server.getPlayerManager().getCurrentPlayerCount();
+            JSONObject json = new JSONObject();
+            json.put("mc_ip", server.getServerIp());
+            json.put("type", "PLAYER_COUNT_UPDATE");
+            json.put("player_count", playerCount);
+            webSocket.sendSignal(json.toString());
+        } catch (Exception e) {
+            System.err.println("Error sending player count update: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
