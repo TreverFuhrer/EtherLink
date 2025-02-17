@@ -1,6 +1,5 @@
 package toki.etherlink.events;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.MinecraftServer;
 import org.json.JSONObject;
@@ -10,7 +9,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerCountListener {
-    private static final long COOLDOWN_INTERVAL = 302000; // 5 minutes + 2 seconds (ms)
+    private static final long COOLDOWN_INTERVAL = 301000; // 5 minutes + 1 seconds (ms)
     private final InitWebSocket webSocket;
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private long lastUpdateTime = 0;
@@ -23,7 +22,6 @@ public class PlayerCountListener {
     public void register() {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> handlePlayerChange(server));
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> handlePlayerChange(server));
-        ServerLifecycleEvents.SERVER_STARTED.register(this::handlePlayerChange);
     }
 
     private synchronized void handlePlayerChange(MinecraftServer server) {
@@ -31,7 +29,8 @@ public class PlayerCountListener {
         if (currentTime - lastUpdateTime >= COOLDOWN_INTERVAL) {
             sendUpdatedPlayerCount(server);
             lastUpdateTime = currentTime;
-        } else if (!pendingUpdate) {
+        } 
+        else if (!pendingUpdate) {
             pendingUpdate = true;
             long delay = (COOLDOWN_INTERVAL - (currentTime - lastUpdateTime)) / 1000;
             scheduler.schedule(() -> {

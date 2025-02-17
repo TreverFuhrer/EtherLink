@@ -26,8 +26,10 @@ public class InitWebSocket extends WebSocketServer {
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         String clientAuthToken = handshake.getFieldValue("AUTH_TOKEN");
         if (AUTH_TOKEN.equals(clientAuthToken)) {
-            botConnection = conn;
-            logger.info("Authorized connection: " + conn.getRemoteSocketAddress());
+            if (botConnection == null || !botConnection.isOpen()) {
+                botConnection = conn;
+                logger.info("[EtherLink] Authorized connection: " + conn.getRemoteSocketAddress());
+            }
         } 
         else {
             logger.warning("Unauthorized connection attempt: " + conn.getRemoteSocketAddress());
@@ -37,8 +39,9 @@ public class InitWebSocket extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        logger.info("[EtherLink] Connection closed: Code=" + code + ", Reason=" + reason);
+        logger.info("[EtherLink] Connection closed: " + conn.getRemoteSocketAddress());
         if (conn == botConnection) botConnection = null;
-        logger.info("Connection closed: " + conn.getRemoteSocketAddress());
     }
 
     @Override // Handle incoming messages

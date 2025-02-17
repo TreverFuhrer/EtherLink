@@ -42,13 +42,6 @@ public class EtherLink implements ModInitializer {
         // Register events initially
         registerEvents();
 
-        // Ensure WebSocket and events restart on server restart
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            LOGGER.info("[EtherLink] Server restarting... Restarting WebSocket and events.");
-            startWebSocketServer();
-            registerEvents();
-        });
-
         LOGGER.info("[EtherLink] Mod initialized successfully!");
     }
 
@@ -57,8 +50,7 @@ public class EtherLink implements ModInitializer {
             LOGGER.info("[EtherLink] Stopping old WebSocket instance...");
             try {
                 webSocket.stop();
-            } 
-			catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 LOGGER.error("[EtherLink] ERROR: Couldn't stop WebSocket.", e);
             }
         }
@@ -72,8 +64,7 @@ public class EtherLink implements ModInitializer {
             webSocket = new InitWebSocket(new InetSocketAddress(host, port));
             webSocket.start();
             LOGGER.info("[EtherLink] WebSocket server started successfully.");
-        } 
-		catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             LOGGER.error("[EtherLink] ERROR: Invalid WebSocket URL!", e);
         }
     }
@@ -86,5 +77,17 @@ public class EtherLink implements ModInitializer {
 		LOGGER.info("[EtherLink] Registering Join/Leave Listener...");
 		PlayerCountListener playerCountListener = new PlayerCountListener(webSocket);
     	playerCountListener.register();
+
+        // Ensure WebSocket and events restart on server restart
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            LOGGER.info("[EtherLink] Server restarting... Restarting WebSocket and events.");
+            try {
+                Thread.sleep(1000);  // Add slight delay to avoid conflicts
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            startWebSocketServer();
+            registerEvents();
+        });
     }
 }

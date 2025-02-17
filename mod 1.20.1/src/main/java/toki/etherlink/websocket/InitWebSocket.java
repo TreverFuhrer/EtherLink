@@ -26,6 +26,7 @@ public class InitWebSocket extends WebSocketServer {
         if (AUTH_TOKEN.equals(clientAuthToken)) {
             botConnection = conn;
             LOGGER.info("[EtherLink] Authorized connection: " + conn.getRemoteSocketAddress());
+            LOGGER.info("[EtherLink] Stored botConnection: " + botConnection);
         } 
         else {
             LOGGER.warn("[EtherLink] Unauthorized connection attempt: " + conn.getRemoteSocketAddress());
@@ -57,8 +58,17 @@ public class InitWebSocket extends WebSocketServer {
 
     // Send signal message to bot
     public void sendSignal(String signal) {
+    synchronized (this) {
         if (botConnection != null && botConnection.isOpen()) {
-            botConnection.send(signal);
+            try {
+                botConnection.send(signal);
+                LOGGER.info("[EtherLink] Signal sent successfully.");
+            } catch (Exception e) {
+                LOGGER.error("[EtherLink] Error sending signal: " + e.getMessage(), e);
+            }
+        } else {
+            LOGGER.warn("[EtherLink] Tried to send signal, but no active connection.");
         }
     }
+}
 }
