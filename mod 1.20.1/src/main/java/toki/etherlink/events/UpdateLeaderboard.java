@@ -7,10 +7,10 @@ import net.minecraft.server.MinecraftServer;
 import org.json.JSONObject;
 import toki.etherlink.websocket.InitWebSocket;
 
-import com.cobblemon.mod.common.Cobblemon;
+//import com.cobblemon.mod.common.Cobblemon;
 // Use proper Cobblemon imports based on the mod's documentation
 //import com.cobblemon.mod.common.api.storage.player.PlayerInstancedDataStoreManager;
-import com.cobblemon.mod.common.api.storage.player.PlayerData;
+//import com.cobblemon.mod.common;
 
 
 import java.util.Map;

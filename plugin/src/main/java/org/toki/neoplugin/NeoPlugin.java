@@ -9,22 +9,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.toki.neoplugin.events.ChatListener;
-import org.toki.neoplugin.events.PlayerCountListener;
-import org.toki.neoplugin.websocket.IncomingSignal;
+//import org.toki.neoplugin.events.PlayerCountListener;
 import org.toki.neoplugin.websocket.InitWebSocket;
+import java.util.logging.Logger;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
 public final class NeoPlugin extends JavaPlugin {
 
     private static NeoPlugin instance;
-    private InitWebSocket webSocket;
+    private static InitWebSocket webSocket;
+    private static Logger logger;
 
     @Override
     public void onEnable() {
-        IncomingSignal.initialize(this);
         Dotenv dotenv = Dotenv.configure().filename(".env").load();
         instance = this;
+        logger = getLogger();
 
         try {
             URI uri = new URI(dotenv.get("WEBSOCKET_URL"));
@@ -32,24 +33,25 @@ public final class NeoPlugin extends JavaPlugin {
             int port = uri.getPort();
 
             // New webSocket with (address, logger) and starts it
-            webSocket = new InitWebSocket(new InetSocketAddress(host, port), getLogger());
+            webSocket = new InitWebSocket(new InetSocketAddress(host, port));
             webSocket.start();
         } 
         catch (URISyntaxException e) {
+            logger.info("[NeoPlugin] WebSocket failed to enable/start: " + e.getMessage());    
             e.printStackTrace();
         }
 
         // Register all event listeners
         registerListeners(
             List.of(
-                new ChatListener(webSocket),
-                new PlayerCountListener(webSocket)
+                new ChatListener()//,
+                //new PlayerCountListener(webSocket)
                 // Add other listeners here as needed
             )
         );
 
         // Startup log message
-        getLogger().info("NeoPlugin enabled and WebSocket client connected.");    
+        logger.info("[NeoPlugin] Enabled and WebSocket client connected.");    
     }
 
     @Override // Shutdown websocket server when plugin disabled
@@ -57,9 +59,10 @@ public final class NeoPlugin extends JavaPlugin {
         try {
             if (webSocket != null) {
                 webSocket.stop();
-                getLogger().info("WebSocket server stopped.");
+                logger.info("[NeoPlugin] WebSocket server stopped.");
             }
         } catch (Exception e) {
+            logger.info("[NeoPlugin] WebSocket failed to disable/stop: " + e.getMessage());    
             e.printStackTrace();
         }
     }    
@@ -67,6 +70,16 @@ public final class NeoPlugin extends JavaPlugin {
     // Return instance of plugin
     public static NeoPlugin getInstance() {
         return instance;
+    }
+
+    // Return current websocket connect
+    public static InitWebSocket getWebSocket() {
+        return webSocket;
+    }
+
+    // Return the plugin logger
+    public static Logger logger() {
+        return logger;
     }
 
     /**

@@ -1,21 +1,15 @@
 package org.toki.neoplugin.websocket;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.json.JSONObject;
+import org.toki.neoplugin.NeoPlugin;
 import org.toki.neoplugin.handlers.WhitelistHandler;
 
 /**
  * Handles incoming signal from Discord Bot
  */
 public class IncomingSignal {
-    
-    private static JavaPlugin plugin;
 
-    public static void initialize(JavaPlugin pluginInstance) {
-        plugin = pluginInstance;
-    }
-    
     /** 
      * Route incomming signal message to handlers
      * @param signal message from bot
@@ -35,23 +29,20 @@ public class IncomingSignal {
         // And with the jsonObj i can just do json.getString("username") or for request_id
 
         switch (eventType) {
-            case "CHAT_MESSAGE":
-                //ChatHandler.handleChatMessage(json);
-                break;
             case "SERVER_CHAT":
                 consoleCommand("say " + data);
                 break;
             case "WHITELIST":
-                WhitelistHandler.handleWhitelist(data, plugin);
+                WhitelistHandler.handleWhitelist(data, NeoPlugin.getInstance());
                 break;
             default:
-                System.out.println("Unknown event type: " + eventType);
+                NeoPlugin.logger().info("[NeoPlugin] Unknown event type: " + eventType);
         }
     }
 
     // Helper method to run commands in server console
     private static void consoleCommand(String command) {
-        Bukkit.getScheduler().runTask(plugin, () -> {
+        Bukkit.getScheduler().runTask(NeoPlugin.getInstance(), () -> {
             Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), command);
         });
     }

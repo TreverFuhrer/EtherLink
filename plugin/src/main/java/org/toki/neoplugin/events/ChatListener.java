@@ -4,23 +4,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.json.JSONObject;
-import org.toki.neoplugin.websocket.InitWebSocket;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import org.toki.neoplugin.NeoPlugin;
 
 public class ChatListener implements Listener {
 
-    private final InitWebSocket webSocket;
-
-    public ChatListener(InitWebSocket webSocket) {
-        this.webSocket = webSocket;
-    }
-
     @EventHandler
     public void onPlayerChat(AsyncChatEvent event) {
-        if (webSocket == null) return;
+        if (NeoPlugin.getWebSocket() == null) {
+            System.err.println("Error: webSocket null at start of onPlayerChat");
+            return;
+        }
         String username = event.getPlayer().getName();
         Component messageComponent = event.message();
         String mc_ip = Bukkit.getServer().getIp();
@@ -36,7 +33,12 @@ public class ChatListener implements Listener {
         json.put("message", messageJson);
 
         // Send to discord bot
-        webSocket.sendSignal(json.toString());
+        try {
+            NeoPlugin.getWebSocket().sendSignal(json.toString());
+        } catch (Exception e) {
+            System.err.println("Error sending player count update: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
 }

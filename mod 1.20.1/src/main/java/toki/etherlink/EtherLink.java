@@ -1,9 +1,7 @@
 package toki.etherlink;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import toki.etherlink.events.ChatListener;
-import toki.etherlink.events.PlayerCountListener;
 import toki.etherlink.handlers.WhitelistHandler;
 import toki.etherlink.websocket.IncomingSignal;
 import toki.etherlink.websocket.InitWebSocket;
@@ -20,9 +18,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class EtherLink implements ModInitializer {
     public static final String MOD_ID = "etherlink";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    private InitWebSocket webSocket;
-    private String websocketUrl;
-    private ChatListener chatListener;
+    private static InitWebSocket webSocket;
 
     @Override
     public void onInitialize() {
@@ -30,31 +26,9 @@ public class EtherLink implements ModInitializer {
 
         // Load environment variables
         Dotenv dotenv = Dotenv.load();
-        websocketUrl = dotenv.get("WEBSOCKET_URL");
+        String websocketUrl = dotenv.get("WEBSOCKET_URL");
 
         // Initialize WebSocket
-        startWebSocketServer();
-
-		// Initialize server instances
-        IncomingSignal.initialize();
-        WhitelistHandler.initialize();
-
-        // Register events initially
-        registerEvents();
-
-        LOGGER.info("[EtherLink] Mod initialized successfully!");
-    }
-
-    private void startWebSocketServer() {
-        if (webSocket != null) {
-            LOGGER.info("[EtherLink] Stopping old WebSocket instance...");
-            try {
-                webSocket.stop();
-            } catch (InterruptedException e) {
-                LOGGER.error("[EtherLink] ERROR: Couldn't stop WebSocket.", e);
-            }
-        }
-
         try {
             URI uri = new URI(websocketUrl);
             String host = uri.getHost();
@@ -67,27 +41,28 @@ public class EtherLink implements ModInitializer {
         } catch (URISyntaxException e) {
             LOGGER.error("[EtherLink] ERROR: Invalid WebSocket URL!", e);
         }
+
+		// Initialize server instances
+        IncomingSignal.initialize();
+        WhitelistHandler.initialize();
+
+        // Register events initially
+        registerEvents();
+
+        LOGGER.info("[EtherLink] Mod initialized successfully!");
+    }
+
+    // Return current websocket connection
+    public static InitWebSocket getWebSocket() {
+        return webSocket;
     }
 
     private void registerEvents() {       
         LOGGER.info("[EtherLink] Registering Chat Listener...");
-        chatListener = new ChatListener(webSocket);
-        chatListener.register();
+        new ChatListener().register();
 
-		LOGGER.info("[EtherLink] Registering Join/Leave Listener...");
-		PlayerCountListener playerCountListener = new PlayerCountListener(webSocket);
-    	playerCountListener.register();
-
-        // Ensure WebSocket and events restart on server restart
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            LOGGER.info("[EtherLink] Server restarting... Restarting WebSocket and events.");
-            try {
-                Thread.sleep(1000);  // Add slight delay to avoid conflicts
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            startWebSocketServer();
-            registerEvents();
-        });
+		//LOGGER.info("[EtherLink] Registering Join/Leave Listener...");
+		//PlayerCountListener playerCountListener = new PlayerCountListener(webSocket);
+    	//playerCountListener.register();
     }
 }

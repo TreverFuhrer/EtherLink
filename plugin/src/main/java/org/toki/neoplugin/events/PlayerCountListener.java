@@ -1,74 +1,73 @@
 package org.toki.neoplugin.events;
 
+import java.util.Collection;
+import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.json.JSONObject;
 import org.toki.neoplugin.NeoPlugin;
-import org.toki.neoplugin.websocket.InitWebSocket;
 
 public class PlayerCountListener implements Listener {
-    private static final long COOLDOWN_INTERVAL = 302000; // 5 minutes + 2 seconds in milliseconds
-    private long lastUpdateTime = 0;
-    private boolean pendingUpdate = false;
-    private static BukkitTask scheduledTask = null;
-
-    private final InitWebSocket webSocket;
-
-    public PlayerCountListener(InitWebSocket webSocket) {
-        this.webSocket = webSocket;
-    }
+    private static final long INTERVAL = 6000L; // 5 minutes in ticks 
+    private BukkitTask playerCountTask = null;
+    private Logger logger = NeoPlugin.logger();
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        handlePlayerChange();
+        if (playerCountTask == null) {
+            startPlayerCountTask();
+        }
     }
 
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        handlePlayerChange();
-    }
-
-    private void handlePlayerChange() {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastUpdateTime >= COOLDOWN_INTERVAL) {
-            sendUpdatedPlayerCount();
-            lastUpdateTime = currentTime;
-        } else if (!pendingUpdate) {
-            pendingUpdate = true;
-            long delay = Math.max(1, (COOLDOWN_INTERVAL - (currentTime - lastUpdateTime)) / 50); // Convert ms to ticks
-            if (scheduledTask != null && !scheduledTask.isCancelled()) {
-                scheduledTask.cancel();
+    private void startPlayerCountTask() {
+        logger.info("[NeoPlugin] Player joined - Started player count task");
+        playerCountTask = new BukkitRunnable() {
+            @Override
+            public void run() {
+                logger.info("[NeoPlugin] Continuing player count task");
+                sendUpdatedPlayerCount();
             }
-            scheduledTask = new BukkitRunnable() {
-                @Override
-                public void run() {
-                    if (pendingUpdate) {
-                        sendUpdatedPlayerCount();
-                        pendingUpdate = false;
-                        lastUpdateTime = System.currentTimeMillis();
-                    }
-                }
-            }.runTaskLater(NeoPlugin.getInstance(), delay);
+        }.runTaskTimer(NeoPlugin.getInstance(), 0L, INTERVAL);
+    }
+
+    private void stopPlayerCountTask() {
+        logger.info("[NeoPlugin] Stopping player count task");
+        if (playerCountTask != null) {
+            playerCountTask.cancel();
+            playerCountTask = null;
+        }
+        else {
+            logger.info("[NeoPlugin] Tried to stop player count task with playerCountTask == null");
         }
     }
 
     private void sendUpdatedPlayerCount() {
-        if (webSocket == null) return;
+        if (NeoPlugin.getWebSocket() == null) return;
 
-        Server server = Bukkit.getServer();
-        int playerCount = server.getOnlinePlayers().size();
+        Collection<?> onlinePlayers = Bukkit.getOnlinePlayers();
+        if (onlinePlayers.isEmpty() && playerCountTask != null) {
+            stopPlayerCountTask();
+        }
+
+        logger.info("[NeoPlugin] Going to send player update signal with IP: " + Bukkit.getIp() + " and Player Count: " + onlinePlayers.size());
 
         JSONObject json = new JSONObject();
-        json.put("mc_ip", server.getIp());
+        json.put("mc_ip", Bukkit.getIp());
         json.put("type", "PLAYER_COUNT_UPDATE");
-        json.put("player_count", playerCount);
+        json.put("player_count", onlinePlayers.size());
 
-        webSocket.sendSignal(json.toString());
+        // Send to discord bot
+        try {
+            logger.info("[NeoPlugin] Attempting to send player count update signal");
+            NeoPlugin.getWebSocket().sendSignal(json.toString());
+        } catch (Exception e) {
+            logger.info("[NeoPlugin] Error sending player count update: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
