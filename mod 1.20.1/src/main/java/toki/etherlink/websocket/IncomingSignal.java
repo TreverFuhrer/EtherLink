@@ -2,13 +2,16 @@ package toki.etherlink.websocket;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.MinecraftServer;
+import toki.etherlink.EtherLink;
 import toki.etherlink.handlers.WhitelistHandler;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
 
 public class IncomingSignal {
 
     private static MinecraftServer server;
+    private static final Logger LOGGER = EtherLink.LOGGER;
 
     // Initialize with the Minecraft server instance
     public static void initialize() {
@@ -28,10 +31,6 @@ public class IncomingSignal {
         //String requestId = json.optString("request_id", "");
 
         switch (eventType) {
-            case "CHAT_MESSAGE":
-                // Old / Not gonna use
-                // ChatHandler.handleChatMessage(json);
-                break;
             case "SERVER_CHAT":
                 consoleCommand("say " + data);
                 break;
@@ -39,7 +38,7 @@ public class IncomingSignal {
                 WhitelistHandler.handleWhitelist(data);
                 break;
             default:
-                System.out.println("[EtherLink] Unknown event type: " + eventType);
+                LOGGER.info("[EtherLink] Unknown event type: " + eventType);
         }
     }
 

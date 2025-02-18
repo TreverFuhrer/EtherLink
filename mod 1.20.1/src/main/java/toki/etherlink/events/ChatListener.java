@@ -7,10 +7,9 @@ import toki.etherlink.EtherLink;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ChatListener {
-    private static final Logger LOGGER = LoggerFactory.getLogger("etherlink");
+    private static final Logger LOGGER = EtherLink.LOGGER;
     
     public void register() {
         ServerMessageEvents.CHAT_MESSAGE.register((message, sender, signedMessage) -> {

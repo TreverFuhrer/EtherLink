@@ -1,7 +1,10 @@
 package toki.etherlink;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.server.MinecraftServer;
 import toki.etherlink.events.ChatListener;
+import toki.etherlink.events.PlayerCountListener;
 import toki.etherlink.handlers.WhitelistHandler;
 import toki.etherlink.websocket.IncomingSignal;
 import toki.etherlink.websocket.InitWebSocket;
@@ -52,17 +55,22 @@ public class EtherLink implements ModInitializer {
         LOGGER.info("[EtherLink] Mod initialized successfully!");
     }
 
-    // Return current websocket connection
+    // Return current websocket connect
     public static InitWebSocket getWebSocket() {
         return webSocket;
     }
 
     private void registerEvents() {       
-        LOGGER.info("[EtherLink] Registering Chat Listener...");
+        LOGGER.info("[EtherLink] Registering ChatListener..");
         new ChatListener().register();
+        LOGGER.info("[EtherLink] Registering PlayerCountListener...");
+    	new PlayerCountListener().register();
 
-		//LOGGER.info("[EtherLink] Registering Join/Leave Listener...");
-		//PlayerCountListener playerCountListener = new PlayerCountListener(webSocket);
-    	//playerCountListener.register();
+        // End of life cycle event
+        ServerLifecycleEvents.SERVER_STOPPING.register(this::onServerStopping);
+    }
+
+    private void onServerStopping(MinecraftServer server) {
+
     }
 }

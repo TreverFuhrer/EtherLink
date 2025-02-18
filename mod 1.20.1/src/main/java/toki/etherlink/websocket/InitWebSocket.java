@@ -5,13 +5,14 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import io.github.cdimascio.dotenv.Dotenv;
+import toki.etherlink.EtherLink;
+
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class InitWebSocket extends WebSocketServer {
 
     private WebSocket botConnection = null;
-    private static final Logger LOGGER = LoggerFactory.getLogger("etherlink");
+    private static final Logger LOGGER = EtherLink.LOGGER;
     private final String AUTH_TOKEN;
 
     public InitWebSocket(InetSocketAddress address) {
