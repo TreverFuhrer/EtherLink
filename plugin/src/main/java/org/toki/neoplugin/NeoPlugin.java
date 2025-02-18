@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.toki.neoplugin.events.ChatListener;
-//import org.toki.neoplugin.events.PlayerCountListener;
+import org.toki.neoplugin.events.PlayerCountListener;
 import org.toki.neoplugin.websocket.InitWebSocket;
 import java.util.logging.Logger;
 
@@ -44,8 +44,8 @@ public final class NeoPlugin extends JavaPlugin {
         // Register all event listeners
         registerListeners(
             List.of(
-                new ChatListener()//,
-                //new PlayerCountListener(webSocket)
+                new ChatListener(),
+                new PlayerCountListener()
                 // Add other listeners here as needed
             )
         );
