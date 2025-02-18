@@ -16,8 +16,14 @@ async def update_player_count_channel(data, discord_id):
         print("Channel doesnt exist, removing channel from database.")
         remove_channel(discord_id, "player_count")
         return
+    
+    player_count = data.get("player_count", -2)
 
     # Rename channel to new player count
-    new_name = f"Online: {data.get("player_count", -2)}"
-    print(f"Renaming to Online: {data.get("player_count", -2)}")
+    new_name = f"Online: {player_count}"
+    print(f"Renaming to Online: {player_count}")
     await channel.edit(name=new_name)
+
+
+    # Continue this code if channel not renaming to 0 happens again
+    #if player_count == 0 and not channel.name.endswith("0"):
