@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PlayerCountListener {
     private static final Logger LOGGER = EtherLink.LOGGER;
-    private static final long INTERVAL = 5; // Interval in minutes
+    private static final long INTERVAL = 300; // 5 minutes in seconds
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> playerCountTask = null;
 
@@ -33,7 +33,7 @@ public class PlayerCountListener {
         LOGGER.info("[EtherLink] Starting player count task.");
         playerCountTask = scheduler.scheduleAtFixedRate(() -> {
             sendUpdatedPlayerCount(server);
-        },0, INTERVAL, TimeUnit.MINUTES);
+        },1, INTERVAL, TimeUnit.SECONDS);
     }
 
     private void stopPlayerCountTask() {
