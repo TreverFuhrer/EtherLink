@@ -51,7 +51,7 @@ async def connect_to_websockets(discord_id, websocket_url):
             attempts += 1
             active_websockets.pop(discord_id, None)
             if not set_offline:
-                update_player_count_channel({"player_count": "Offline"}, discord_id)
+                await update_player_count_channel({"player_count": "Offline"}, discord_id)
                 set_offline = True
             await asyncio.sleep(sleep_duration) # Wait before retrying
 
