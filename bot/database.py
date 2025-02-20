@@ -99,5 +99,6 @@ def remove_channel(discord_id, channel_name):
         return f"Error removing channel: {e}"
     
 
+print(get_all_servers())
 print(get_channels(1337930671720497174))
 

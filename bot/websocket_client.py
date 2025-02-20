@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from handlers import joinLeave_handler
 from handlers import chat_handler
 from database import get_all_servers, get_discord_id
+from handlers.joinLeave_handler import update_player_count_channel
 
 load_dotenv()
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
@@ -25,6 +26,7 @@ async def connect_to_websockets(discord_id, websocket_url):
     """Connects to a Minecraft server WebSocket and listens for messages."""
     sleep_duration = 10
     attempts = 0
+    set_offline = False
     
     while True:
         if (attempts > 12):
@@ -34,8 +36,11 @@ async def connect_to_websockets(discord_id, websocket_url):
             ) as websocket:
                 print("Connected to the WebSocket server.")
                 active_websockets[discord_id] = websocket
+
+                # Reset temp variables
                 attempts = 0
                 sleep_duration = 10
+                set_offline = False
 
                 # Start listening for messages
                 while True:
@@ -45,6 +50,9 @@ async def connect_to_websockets(discord_id, websocket_url):
             print(f"WebSocket connection lost for {websocket_url}. Retrying in {sleep_duration} seconds...")
             attempts += 1
             active_websockets.pop(discord_id, None)
+            if not set_offline:
+                update_player_count_channel({"player_count": "Offline"}, discord_id)
+                set_offline = True
             await asyncio.sleep(sleep_duration) # Wait before retrying
 
 
