@@ -36,7 +36,7 @@ class Lore(commands.Cog):
     """ Server Chat Command """
     @commands.hybrid_command(name="lore", description="Generate funny lore about someone!")
     async def lore(self, ctx: commands.Context, username: str):
-        await ctx.defer(ephemeral=True) # Delay discord response
+        await ctx.defer() # Delay discord response
         
         if username.startswith("."):
             username = username[1:] # Remove . from start of name
