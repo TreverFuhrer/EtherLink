@@ -40,7 +40,9 @@ async def connect_to_websockets(discord_id, websocket_url):
                 # Reset temp variables
                 attempts = 0
                 sleep_duration = 10
-                set_offline = False
+                if set_offline:
+                    await update_player_count_channel({"player_count": 0}, discord_id)
+                    set_offline = False
 
                 # Start listening for messages
                 while True:
