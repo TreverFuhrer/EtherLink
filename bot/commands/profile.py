@@ -14,34 +14,33 @@ class Profile(commands.Cog):
     @commands.hybrid_command(name="profile", description="See a uses NeoSMP user profile!")
     async def profile(self, ctx: commands.Context, username: str):
         
-        if str.startswith("."):
-            str = str[1:] # Remove . from start of name
-            url = chat_handler.get_head_image_bedrock(str)
+        if username.startswith("."):
+            username = username[1:] # Remove . from start of name
+            url = chat_handler.get_head_image_bedrock(username)
         else:
-            url = chat_handler.get_head_image_java(str)
+            url = chat_handler.get_head_image_java(username)
             response = requests.get(url)
             if response.status_code == 404:
                 # Not valid java player so try bedrock
-                url = chat_handler.get_head_image_bedrock(str)
+                url = chat_handler.get_head_image_bedrock(username)
 
         response = requests.get(url)
         if response.status_code == 404:
             # Not valid java or bedrock
-            await ctx.reply(f"{str} is not a valid java or bedrock username.", ephemeral=True)
+            await ctx.reply(f"{username} is not a valid java or bedrock username.", ephemeral=True)
             return
 
         # Create profile embed message
         embed = discord.Embed(
-            embed.set_author(name=str, icon_url=url),
-            color = chat_handler.name_to_color(str)
+            color = chat_handler.name_to_color(username)
         )
         embed.add_field(name="Blocks Minded", value="1001", inline=True)
-        
+        embed.set_author(name=username, icon_url=url)
+
         # Send embed message
         await ctx.reply(embed=embed)
 
 
 # Setup Cog
 async def setup(bot):
-    bot.remove_command("profile")
     await bot.add_cog(Profile(bot))
