@@ -33,7 +33,7 @@ class CreatePlayerCountChannel(commands.Cog):
         }
 
         # Create the voice channel
-        new_channel = await guild.create_voice_channel(name="Online: -1", overwrites=overwrites)
+        new_channel = await guild.create_voice_channel(name="Online: #", overwrites=overwrites)
         
         # Add channel to database
         add_channel(ctx.guild.id, new_channel.id, "player_count")
