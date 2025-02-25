@@ -17,10 +17,11 @@ async def genLore(prompt):
             client = InferenceClient(token=HUGGING_FACE_API_TOKEN, model="HuggingFaceH4/zephyr-7b-beta")
             lore_update = client.text_generation(
                 prompt,
-                max_new_tokens=300,  # Maximum tokens to generate
-                temperature=0.8,     # Adjust randomness
-                top_k=50,            # Top-k sampling
-                top_p=0.9           # Top-p sampling for nucleus sampling
+                max_new_tokens=300,  # Keep as is unless you want shorter output
+                temperature=1.2,     # Increase randomness for more absurdity
+                top_k=20,            # Lower k to allow more surprising word choices
+                top_p=0.7,           # Reduce p slightly to limit safe predictions
+                repetition_penalty=1.1  # Helps prevent looping or overly structured responses
             )
             return lore_update
         except Exception as e:
@@ -55,13 +56,13 @@ class Lore(commands.Cog):
             return
         
         # Generate Lore
-        prompt = f"""Extremely funny, dark stories about people: 
-            Write about (Male) Gregory, Gregory the Bug Catcher once tripped over his own net, accidentally unleashing a swarm of Beedrill into a preschool, then tried to blame it on a Pidgey. It killed all the children.
-            Write about (Female) Nurse Joy, Nurse Joy #742 lost her license after using an unconscious trainer’s Pokémon for underground fight clubs, claiming it was "for their own growth." She then killed the pokemon and comitted suicide.
-            Write about (Male) Rival Dennis, Rival Dennis once tried to steal a rare Cobblemon, only to find out it secretes hallucinogenic slime, leaving him naked in a fountain, screaming about the moon and pissing all over.
+        prompt = f"""Extremely FUNNY, DARK stories about people: 
+            Write about (He) Gregory, Gregory the Bug Catcher once tripped over his own net, accidentally unleashing a swarm of Beedrill into a preschool, then tried to blame it on a Pidgey. It killed all the children.
+            Write about (She) Nurse Joy, Nurse Joy lost her license after using an unconscious trainer’s Pokémon for underground fight clubs, claiming it was "for their own growth." She then killed the pokemon and comitted suicide.
+            Write about (He) Rival Dennis, Rival Dennis once tried to steal a rare Cobblemon, only to find out it secretes hallucinogenic slime, leaving him naked in a fountain, screaming about the moon and pissing all over.
             Write about (They) Gym Leader Cassidy, Gym Leader Cassidy installed a trapdoor under the battlefield, challengers who stepped on the wrong tile. They fell into a pit of horny donkeys that use them till they died.
-            Write about (Boy) Professor Elm's intern, Kyle, Professor Elm's intern, Kyle, accidentally created a Cobblemon so genetically unstable, it phases in and out of existence—stealing souls with each return and ate shit.
-            Write one final story like all of these, but 10x longer and darker: Write about ({gender}) {username}, """
+            Write about (Her) Professor Elm's intern, Kylie, Professor Elm's intern, Kylie, accidentally created a Cobblemon so genetically unstable, it phases in and out of existence—stealing souls with each return and ate shit.
+            Write ONE FINAL story similar to these, but 10x longer and darker: Write about ({gender}) {username}, """
 
 
         lore = await genLore(prompt)
