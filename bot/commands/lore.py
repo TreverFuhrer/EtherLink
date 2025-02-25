@@ -61,7 +61,7 @@ class Lore(commands.Cog):
             Write about Rival Dennis, Rival Dennis once tried to steal a rare Cobblemon, only to find out it secretes hallucinogenic slime, leaving him naked in a fountain, screaming about the moon and pissing all over.
             Write about Gym Leader Cassidy, Gym Leader Cassidy installed a trapdoor under the battlefield, challengers who stepped on the wrong tile. They fell into a pit of horny donkeys that use them till they died.
             Write about Professor Elm's intern, Kyle, Professor Elm's intern, Kyle, accidentally created a Cobblemon so genetically unstable, it phases in and out of existence—stealing souls with each return and ate shit.
-            Write about {username}, """
+            Write one singular more story like all of these, but 10x longer and darker. This will be the last and longest story: Write about {username}, """
 
 
         lore = await genLore(prompt)
