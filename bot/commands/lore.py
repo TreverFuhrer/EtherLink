@@ -64,10 +64,8 @@ class Lore(commands.Cog):
             - An encounter at a Pokémon Center or Gym that leads to unforeseen disaster.
             - A rival or NPC experiencing a series of hilariously unfortunate events.
             - A twist ending that leaves '{username}' either triumphantly absurd or deeply contemplative.
-
-            Infuse the narrative with dry, sarcastic humor, ironic twists, and exaggerated scenarios. Ensure the dialogue is lively, filled with quick-witted exchanges, and embraces the story's absurdity.
-
-            Aim for a story length of approximately 500-700 words to maintain engagement and coherence. Use proper grammar and punctuation to enhance readability and comedic effect."""
+            - Infuse the narrative with dry, sarcastic humor, ironic twists, and exaggerated scenarios. 
+            - Ensure the dialogue is lively, filled with quick-witted exchanges, and embraces the story's absurdity."""
 
 
         lore = await genLore(prompt)
