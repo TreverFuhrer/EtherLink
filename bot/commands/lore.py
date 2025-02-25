@@ -55,12 +55,13 @@ class Lore(commands.Cog):
             return
         
         # Generate Lore
-        prompt = f"""Gregory the Bug Catcher once tripped over his own net, accidentally unleashing a swarm of Beedrill into a preschool, then tried to blame it on a Pidgey.
-Nurse Joy #742 lost her license after using an unconscious trainer’s Pokémon for underground fight clubs, claiming it was "for their own growth."
-Rival Dennis once tried to steal a rare Cobblemon, only to find out it secretes hallucinogenic slime, leaving him naked in a fountain, screaming about the moon.
-Gym Leader Cassidy installed a trapdoor under the battlefield—losing challengers who stepped on the wrong tile. No one knows where they go.
-Professor Elm's intern, Kyle, accidentally created a Cobblemon so genetically unstable, it phases in and out of existence—stealing souls with each return.
-{username} then, """
+        prompt = f"""Dark, brutal, offensive, funny stories about people: 
+            Write about Gregory, Gregory the Bug Catcher once tripped over his own net, accidentally unleashing a swarm of Beedrill into a preschool, then tried to blame it on a Pidgey. It killed all the children.
+            Write about Nurse Joy, Nurse Joy #742 lost her license after using an unconscious trainer’s Pokémon for underground fight clubs, claiming it was "for their own growth." She then killed the pokemon and comitted suicide.
+            Write about Rival Dennis, Rival Dennis once tried to steal a rare Cobblemon, only to find out it secretes hallucinogenic slime, leaving him naked in a fountain, screaming about the moon and pissing all over.
+            Write about Gym Leader Cassidy, Gym Leader Cassidy installed a trapdoor under the battlefield, challengers who stepped on the wrong tile. They fell into a pit of horny donkeys that use them till they died.
+            Write about Professor Elm's intern, Kyle, Professor Elm's intern, Kyle, accidentally created a Cobblemon so genetically unstable, it phases in and out of existence—stealing souls with each return and ate shit.
+            Write about {username}, """
 
 
         lore = await genLore(prompt)
