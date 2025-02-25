@@ -55,16 +55,12 @@ class Lore(commands.Cog):
             return
         
         # Generate Lore
-        prompt = f"""Write a darkly humorous and absurdly chaotic Cobblemon adventure starring '{username}'.
-            Start with a classic, cheerful Pokémon journey—but let it quickly spiral into absolute madness.
-            Include:
-                A wild Cobblemon behaving in ways that defy logic, physics, and basic morality.
-                A battle that escalates from friendly to catastrophic, leaving permanent consequences.
-                A Pokémon Center or Gym encounter that turns into an irreversible disaster.
-                A rival or NPC suffering an increasingly ridiculous series of misfortunes.
-                A twist ending that is either disturbingly triumphant or existentially horrifying.
-                The tone should be fast, sarcastic, and unpredictable—every event should escalate into something worse.
-                No safe storytelling. Jump straight in—no introductions. Just pure, chaotic storytelling."""
+        prompt = f"""Gregory the Bug Catcher once tripped over his own net, accidentally unleashing a swarm of Beedrill into a preschool, then tried to blame it on a Pidgey.
+Nurse Joy #742 lost her license after using an unconscious trainer’s Pokémon for underground fight clubs, claiming it was "for their own growth."
+Rival Dennis once tried to steal a rare Cobblemon, only to find out it secretes hallucinogenic slime, leaving him naked in a fountain, screaming about the moon.
+Gym Leader Cassidy installed a trapdoor under the battlefield—losing challengers who stepped on the wrong tile. No one knows where they go.
+Professor Elm's intern, Kyle, accidentally created a Cobblemon so genetically unstable, it phases in and out of existence—stealing souls with each return.
+{username} then, """
 
 
         lore = await genLore(prompt)
