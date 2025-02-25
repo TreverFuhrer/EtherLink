@@ -55,17 +55,16 @@ class Lore(commands.Cog):
             return
         
         # Generate Lore
-        prompt = f"""Write a darkly humorous and unpredictable Cobblemon adventure story starring '{username}'.
-            Begin with a classic, lighthearted Pokémon journey filled with excitement and optimism. As the story progresses, introduce a sudden, dramatic, and absurdly dark twist that adds an unexpected and entertaining dimension.
-
-            Incorporate the following elements:
-            - A wild Cobblemon exhibiting bizarre and unhinged behavior.
-            - A battle that escalates from a simple match to complete chaos.
-            - An encounter at a Pokémon Center or Gym that leads to unforeseen disaster.
-            - A rival or NPC experiencing a series of hilariously unfortunate events.
-            - A twist ending that leaves '{username}' either triumphantly absurd or deeply contemplative.
-            - Infuse the narrative with dry, sarcastic humor, ironic twists, and exaggerated scenarios. 
-            - Ensure the dialogue is lively, filled with quick-witted exchanges, and embraces the story's absurdity."""
+        prompt = f"""Write a darkly humorous and absurdly chaotic Cobblemon adventure starring '{username}'.
+            Start with a classic, cheerful Pokémon journey—but let it quickly spiral into absolute madness.
+            Include:
+                A wild Cobblemon behaving in ways that defy logic, physics, and basic morality.
+                A battle that escalates from friendly to catastrophic, leaving permanent consequences.
+                A Pokémon Center or Gym encounter that turns into an irreversible disaster.
+                A rival or NPC suffering an increasingly ridiculous series of misfortunes.
+                A twist ending that is either disturbingly triumphant or existentially horrifying.
+                The tone should be fast, sarcastic, and unpredictable—every event should escalate into something worse.
+                No safe storytelling. Jump straight in—no introductions. Just pure, chaotic storytelling."""
 
 
         lore = await genLore(prompt)
